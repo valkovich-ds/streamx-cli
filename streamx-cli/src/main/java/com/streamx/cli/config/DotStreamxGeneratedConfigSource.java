@@ -1,13 +1,12 @@
 package com.streamx.cli.config;
 
-import io.smallrye.config.PropertiesConfigSource;
+import static com.streamx.cli.util.FileUtils.createIfNotExists;
 
+import io.smallrye.config.PropertiesConfigSource;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
-
-import static com.streamx.cli.util.FileUtils.createIfNotExists;
 
 public class DotStreamxGeneratedConfigSource extends PropertiesConfigSource {
 

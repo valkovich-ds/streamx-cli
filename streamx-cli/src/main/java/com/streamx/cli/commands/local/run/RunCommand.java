@@ -1,63 +1,57 @@
 package com.streamx.cli.commands.local.run;
 
+import static com.streamx.cli.i18n.MessageProvider.msg;
+
 import com.streamx.cli.framework.AbstractSilentCommand;
 import com.streamx.cli.framework.CliException;
 import com.streamx.cli.framework.CommandResult;
+import com.streamx.cli.meshprocessing.MeshManager;
+import com.streamx.cli.util.BannerPrinter;
 import com.streamx.runner.StreamxRunner;
 import com.streamx.runner.exception.ContainerStartupTimeoutException;
-import com.streamx.cli.exception.DockerException;
-import com.streamx.cli.meshprocessing.MeshConfig;
-import com.streamx.cli.meshprocessing.MeshManager;
-import com.streamx.cli.meshprocessing.MeshResolver;
-import com.streamx.cli.meshprocessing.MeshSource;
-import com.streamx.cli.util.BannerPrinter;
 import jakarta.inject.Inject;
-import picocli.CommandLine.ArgGroup;
-import picocli.CommandLine.Command;
-
 import java.nio.file.Path;
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
 @Command(name = "run",
     mixinStandardHelpOptions = true,
     description = "Run a StreamX Mesh locally.")
 public class RunCommand extends AbstractSilentCommand {
-
-  @ArgGroup
-  MeshSource meshSource;
-
-  @Inject
-  MeshConfig meshConfig;
-
-  @Inject
-  MeshResolver meshResolver;
+  @CommandLine.Option(
+      names = {"-f", "--file"},
+      description = "Path to mesh definition file.",
+      defaultValue = "mesh.yaml"
+  )
+  public Path meshPath;
 
   @Inject
   StreamxRunner runner;
-
-  @Inject
-  BannerPrinter bannerPrinter;
 
   @Inject
   MeshManager meshManager;
 
   @Override
   public CommandResult<Void> runCommand() {
+    if (!meshPath.toFile().exists()) {
+      throw new CliException("Mesh file not found: " + meshPath);
+    }
+
     try {
-      Path meshPath = meshResolver.resolveMeshPath(meshConfig);
       meshManager.initializeMesh(meshPath);
 
-      bannerPrinter.printBanner();
+      BannerPrinter.printBanner();
       meshManager.initializeRunMode(meshPath);
 
       meshManager.start();
 
       return new CommandResult<>(null);
     } catch (ContainerStartupTimeoutException e) {
-      DockerException dockerException = DockerException.containerStartupFailed(
+      String errMessage = msg.dockerContainerStartupFailed(
           e.getContainerName(),
-          runner.getContext().getStreamxBaseConfig().getContainerStartupTimeout());
-
-      throw new CliException(dockerException.getMessage(), dockerException);
+          runner.getContext().getStreamxBaseConfig().getContainerStartupTimeout()
+      );
+      throw new CliException(errMessage, e);
     }
   }
 }

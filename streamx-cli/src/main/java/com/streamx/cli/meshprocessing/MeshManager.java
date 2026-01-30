@@ -1,25 +1,25 @@
 package com.streamx.cli.meshprocessing;
 
+import static com.streamx.cli.i18n.MessageProvider.msg;
+import static com.streamx.cli.util.Output.print;
+import static com.streamx.runner.main.Main.StreamxApp.printSummary;
+
+import com.streamx.cli.commands.local.run.RunningMeshPropertiesGenerator;
+import com.streamx.cli.framework.CliException;
+import com.streamx.cli.util.ExceptionUtils;
 import com.streamx.cli.util.ExecutionExceptionHandler;
 import com.streamx.mesh.model.ServiceMesh;
 import com.streamx.runner.StreamxRunner;
 import com.streamx.runner.event.MeshReloadUpdate;
 import com.streamx.runner.validation.excpetion.DockerContainerNonUniqueException;
 import com.streamx.runner.validation.excpetion.DockerEnvironmentException;
-import com.streamx.cli.commands.local.run.RunningMeshPropertiesGenerator;
-import com.streamx.cli.exception.DockerException;
-import com.streamx.cli.util.ExceptionUtils;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import picocli.CommandLine;
-
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
-
-import static com.streamx.runner.main.Main.StreamxApp.printSummary;
-import static com.streamx.cli.util.Output.print;
+import org.jetbrains.annotations.NotNull;
+import picocli.CommandLine;
 
 @ApplicationScoped
 public class MeshManager {
@@ -57,11 +57,11 @@ public class MeshManager {
     try {
       this.runner.initialize(serviceMesh, meshPathAsString);
     } catch (DockerContainerNonUniqueException e) {
-      throw DockerException.nonUniqueContainersException(e.getContainers());
+      throw new CliException(msg.failedToStartMeshContainers(e.getMessage()));
     } catch (DockerEnvironmentException e) {
-      throw DockerException.dockerEnvironmentException();
+      throw new CliException(msg.invalidDockerEnvironment());
     } catch (Exception e) {
-      throw throwMeshException(meshPath, e);
+      throw getMeshException(meshPath, e);
     }
 
     this.runner.startBase();
@@ -94,11 +94,11 @@ public class MeshManager {
     try {
       this.runner.initialize(serviceMesh, meshPathAsString);
     } catch (DockerContainerNonUniqueException e) {
-      throw DockerException.nonUniqueContainersException(e.getContainers());
+      throw new CliException(msg.failedToStartMeshContainers(e.getMessage()));
     } catch (DockerEnvironmentException e) {
-      throw DockerException.dockerEnvironmentException();
+      throw new CliException(msg.invalidDockerEnvironment());
     } catch (Exception e) {
-      throw throwMeshException(meshPath, e);
+      throw getMeshException(meshPath, e);
     }
 
     print("");
@@ -118,12 +118,12 @@ public class MeshManager {
     try {
       return meshDefinitionResolver.resolve(meshPath);
     } catch (Exception e) {
-      throw throwMeshException(meshPath, e);
+      throw getMeshException(meshPath, e);
     }
   }
 
-  private RuntimeException throwMeshException(Path meshPath, Exception e) {
-    return new RuntimeException(
+  private CliException getMeshException(Path meshPath, Exception e) {
+    return new CliException(
         ExceptionUtils.appendLogSuggestion(
             "Unable to read mesh definition from '" + meshPath + "'.\n"
             + "\n"

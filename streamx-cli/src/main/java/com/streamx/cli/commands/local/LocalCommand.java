@@ -1,7 +1,7 @@
 package com.streamx.cli.commands.local;
 
-import com.streamx.cli.framework.AbstractCommandGroup;
 import com.streamx.cli.commands.local.run.RunCommand;
+import com.streamx.cli.framework.AbstractCommandGroup;
 import picocli.CommandLine;
 
 @CommandLine.Command(

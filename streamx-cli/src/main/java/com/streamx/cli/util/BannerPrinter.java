@@ -2,6 +2,9 @@ package com.streamx.cli.util;
 
 import static com.streamx.cli.util.Output.print;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
 public class BannerPrinter {
   private static final String BANNER = """
        ____  _                           __  __
@@ -11,7 +14,7 @@ public class BannerPrinter {
       |____/ \\__|_|  \\___|\\__,_|_| |_| |_/_/\\_\\.dev
                                                \s""";
 
-  public void printBanner() {
+  public static void printBanner() {
     print(BANNER);
   }
 }

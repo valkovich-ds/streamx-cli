@@ -1,13 +1,11 @@
 package com.streamx.cli.commands.local.run;
 
-import static com.streamx.cli.commands.ingestion.IngestionClientConfig.STREAMX_INGESTION_AUTH_TOKEN;
-
 import com.streamx.cli.config.DotStreamxGeneratedConfigSource;
 import com.streamx.runner.mesh.MeshContext;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.Properties;
@@ -15,11 +13,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 public class RunningMeshPropertiesGenerator {
-
-  private RunningMeshPropertiesGenerator() {
-    // no instance
-  }
-
   public static void generateRootAuthToken(MeshContext context) {
     Map<String, String> tokensBySource = context.getTokensBySource();
     if (tokensBySource != null) {
@@ -31,7 +24,6 @@ public class RunningMeshPropertiesGenerator {
 
         Properties properties = new Properties();
         properties.load(input);
-        properties.setProperty(STREAMX_INGESTION_AUTH_TOKEN, tokensBySource.get("root"));
 
         output = new FileOutputStream(streamxConfigPath);
         properties.store(output, null);
