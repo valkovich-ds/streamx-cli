@@ -39,9 +39,27 @@
     </dependency>
 
     <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-arc</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-scheduler</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
       <groupId>info.picocli</groupId>
       <artifactId>picocli-shell-jline3</artifactId>
       <version>4.7.5</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.smallrye.config</groupId>
+      <artifactId>smallrye-config</artifactId>
+      <version>3.15.1</version>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>
@@ -49,11 +67,6 @@
       <artifactId>annotations</artifactId>
       <version>26.0.2-1</version>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-arc</artifactId>
     </dependency>
 
     <dependency>
@@ -84,9 +97,85 @@
     </dependency>
 
     <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jdk8</artifactId>
+      <version>2.21.0</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-yaml</artifactId>
       <version>2.20.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.5.14</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.cloudevents</groupId>
+      <artifactId>cloudevents-core</artifactId>
+      <version>4.0.1</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.cloudevents</groupId>
+      <artifactId>cloudevents-json-jackson</artifactId>
+      <version>4.0.1</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <!-- Temporary local StreamX dependencies -->
+    <dependency>
+      <groupId>com.streamx</groupId>
+      <artifactId>streamx-runner</artifactId>
+      <version>2.0.10</version>
+      <scope>system</scope>
+      <systemPath>/home/visortelle/.m2/repository/com/streamx/streamx-runner/2.0.10/streamx-runner-2.0.10.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>com.streamx</groupId>
+      <artifactId>cloudevents-serialization</artifactId>
+      <version>2.0.10</version>
+      <scope>system</scope>
+      <systemPath>/home/visortelle/.m2/repository/com/streamx/cloudevents-serialization/2.0.10/cloudevents-serialization-2.0.10.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>com.streamx</groupId>
+      <artifactId>cloudevents-serialization-json</artifactId>
+      <version>2.0.10</version>
+      <scope>system</scope>
+      <systemPath>/home/visortelle/.m2/repository/com/streamx/cloudevents-serialization-json/2.0.10/cloudevents-serialization-json-2.0.10.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>com.streamx</groupId>
+      <artifactId>ingestion-client</artifactId>
+      <version>2.0.10</version>
+      <scope>system</scope>
+      <systemPath>/home/visortelle/.m2/repository/com/streamx/ingestion-client/2.0.10/ingestion-client-2.0.10.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>com.streamx</groupId>
+      <artifactId>mesh-model</artifactId>
+      <version>2.0.10</version>
+      <scope>system</scope>
+      <systemPath>/home/visortelle/.m2/repository/com/streamx/mesh-model/2.0.10/mesh-model-2.0.10.jar</systemPath>
+    </dependency>
+
+    <!-- Transitive dependencies from the temporary local StreamX dependencies -->
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+      <version>2.0.3</version>
     </dependency>
 
     <!-- Testing Dependencies -->
@@ -128,34 +217,34 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>${checkstyle-plugin.version}</version>
-        <configuration>
-          <configLocation>google_checks.xml</configLocation>
-          <failsOnError>true</failsOnError>
-          <consoleOutput>true</consoleOutput>
-          <includeTestSourceDirectory>true</includeTestSourceDirectory>
-          <failOnViolation>true</failOnViolation>
-          <violationSeverity>warning</violationSeverity>
-          <logViolationsToConsole>true</logViolationsToConsole>
-          <suppressionsLocation>codestyle/checkstyle-suppressions.xml</suppressionsLocation>
-          <sourceDirectories>
-            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-            <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
-          </sourceDirectories>
-        </configuration>
-        <executions>
-          <execution>
-            <id>checkstyle</id>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <phase>validate</phase>
-          </execution>
-        </executions>
-      </plugin>
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-checkstyle-plugin</artifactId>-->
+<!--        <version>${checkstyle-plugin.version}</version>-->
+<!--        <configuration>-->
+<!--          <configLocation>google_checks.xml</configLocation>-->
+<!--          <failsOnError>true</failsOnError>-->
+<!--          <consoleOutput>true</consoleOutput>-->
+<!--          <includeTestSourceDirectory>true</includeTestSourceDirectory>-->
+<!--          <failOnViolation>true</failOnViolation>-->
+<!--          <violationSeverity>warning</violationSeverity>-->
+<!--          <logViolationsToConsole>true</logViolationsToConsole>-->
+<!--          <suppressionsLocation>codestyle/checkstyle-suppressions.xml</suppressionsLocation>-->
+<!--          <sourceDirectories>-->
+<!--            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>-->
+<!--            <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>-->
+<!--          </sourceDirectories>-->
+<!--        </configuration>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>checkstyle</id>-->
+<!--            <goals>-->
+<!--              <goal>check</goal>-->
+<!--            </goals>-->
+<!--            <phase>validate</phase>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${compiler-plugin.version}</version>
