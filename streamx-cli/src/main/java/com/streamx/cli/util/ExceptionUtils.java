@@ -1,6 +1,7 @@
 package com.streamx.cli.util;
 
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.jetbrains.annotations.NotNull;
 
 public final class ExceptionUtils {
 
@@ -8,10 +9,7 @@ public final class ExceptionUtils {
 
   }
 
-  public static RuntimeException sneakyThrow(Throwable t) {
-    if (t == null) {
-      throw new NullPointerException("t");
-    }
+  public static RuntimeException sneakyThrow(@NotNull Throwable t) {
     return ExceptionUtils.<RuntimeException>sneakyThrow0(t);
   }
 
