@@ -4,7 +4,6 @@ import static com.streamx.cli.i18n.MessageProvider.msg;
 import static com.streamx.cli.util.Output.print;
 import static com.streamx.runner.main.Main.StreamxApp.printSummary;
 
-import com.streamx.cli.commands.local.run.RunningMeshPropertiesGenerator;
 import com.streamx.cli.framework.CliException;
 import com.streamx.cli.util.ExceptionUtils;
 import com.streamx.cli.util.ExecutionExceptionHandler;
@@ -107,7 +106,6 @@ public class MeshManager {
     boolean failFast = !errorHandlingExecutor.failsafe;
     boolean started = this.runner.startMesh(failFast);
     print("");
-    RunningMeshPropertiesGenerator.generateRootAuthToken(this.runner.getMeshContext());
     if (started) {
       printSummary(runner, normalizedMeshPath, serviceMesh);
     }
