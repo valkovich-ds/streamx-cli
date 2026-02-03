@@ -29,10 +29,6 @@ public class StreamxMavenPropertiesUtils {
     return getProperty("streamx.cli.version");
   }
 
-  public static String getDashboardImage() {
-    return getProperty("streamx.dev.dashboard.image");
-  }
-
   private static String getProperty(String key) {
     return PROPERTIES.getProperty(key);
   }
