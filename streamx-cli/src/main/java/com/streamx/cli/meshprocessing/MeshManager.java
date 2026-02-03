@@ -66,20 +66,6 @@ public class MeshManager {
     this.runner.startBase();
   }
 
-  public void initializeDevMode(Path meshPath, CommandLine commandLine) {
-    this.meshPath = meshPath;
-    this.errorHandlingExecutor =
-        new ErrorHandlingExecutor(true, executionExceptionHandler, commandLine);
-    this.commandLine = commandLine;
-
-    normalizedMeshPath = meshPath.toAbsolutePath().normalize();
-    meshPathAsString = normalizedMeshPath.toString();
-
-    print("\nSetting up system containers...");
-
-    this.runner.startBase();
-  }
-
   public void start() {
     if (firstStart) {
       firstStart = false;
