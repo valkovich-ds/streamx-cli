@@ -180,11 +180,11 @@ class CommandResultTest {
   }
 
   @Test
-  void shouldThrowRuntimeExceptionForUnserializableObject() {
+  void shouldThrowCliExceptionForUnserializableObject() {
     UnserializableObject unserializable = new UnserializableObject();
     CommandResult<UnserializableObject> commandResult = new CommandResult<>(unserializable);
 
-    assertThrows(RuntimeException.class, () ->
+    assertThrows(CliException.class, () ->
         commandResult.toText(OutputFormat.json, null)
     );
   }
