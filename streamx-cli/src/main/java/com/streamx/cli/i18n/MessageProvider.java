@@ -155,4 +155,7 @@ public interface MessageProvider {
 
   @Message(id = 137, value = "Could not expand value %s in expression %s")
   String couldNotExpandValueInExpression(String key, String expression);
+
+  @Message(id = 138, value = "Mesh file not found at: %s")
+  String meshFileNotFound(String path);
 }
