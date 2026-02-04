@@ -1,5 +1,6 @@
 package com.streamx.cli.interpolation;
 
+import static com.streamx.cli.i18n.MessageProvider.msg;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -80,7 +81,8 @@ public class InterpolationSupportTest {
 
     assertThrows(CliException.class,
         () -> interpolationSupport.expand(rawValue),
-        "Could not expand value undefined.property in expression ${undefined.property}");
+        msg.couldNotExpandValueInExpression("undefined.property", "${undefined.property}")
+    );
   }
 
   @Test

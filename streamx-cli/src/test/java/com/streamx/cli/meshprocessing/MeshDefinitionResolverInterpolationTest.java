@@ -1,5 +1,6 @@
 package com.streamx.cli.meshprocessing;
 
+import static com.streamx.cli.i18n.MessageProvider.msg;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -33,8 +34,10 @@ class MeshDefinitionResolverInterpolationTest {
     assertThatThrownBy(() -> uut.resolve(TEST_MESH_PATH))
         .isInstanceOf(JsonMappingException.class)
         .hasRootCauseInstanceOf(CliException.class)
-        .hasRootCauseMessage("Could not expand value config.image.interpolated"
-                             + " in expression ${config.image.interpolated}");
+        .hasRootCauseMessage(msg.couldNotExpandValueInExpression(
+            "config.image.interpolated",
+            "${config.image.interpolated}"
+        ));
   }
 
   @Test

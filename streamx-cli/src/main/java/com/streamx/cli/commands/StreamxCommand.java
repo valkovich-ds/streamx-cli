@@ -2,6 +2,7 @@ package com.streamx.cli.commands;
 
 import com.streamx.cli.commands.local.LocalCommand;
 import com.streamx.cli.framework.AbstractCommandGroup;
+import com.streamx.cli.util.VersionProvider;
 import picocli.CommandLine;
 
 @CommandLine.Command(
@@ -10,7 +11,8 @@ import picocli.CommandLine;
     description = "StreamX CLI. More info at https://streamx.dev",
     subcommands = {
         LocalCommand.class
-    }
+    },
+    versionProvider = VersionProvider.class
 )
 public class StreamxCommand extends AbstractCommandGroup {
 }

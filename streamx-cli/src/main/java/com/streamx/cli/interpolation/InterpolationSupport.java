@@ -1,5 +1,6 @@
 package com.streamx.cli.interpolation;
 
+import static com.streamx.cli.i18n.MessageProvider.msg;
 import static io.smallrye.common.expression.Expression.Flag;
 
 import com.streamx.cli.framework.CliException;
@@ -17,7 +18,7 @@ public class InterpolationSupport {
    * Adapted from {@link io.smallrye.config.ExpressionConfigSourceInterceptor}
    */
   String expand(final String rawValue) {
-    Objects.requireNonNull(rawValue, "Expression cannot be null");
+    Objects.requireNonNull(rawValue, msg.expressionCannotBeNull());
 
     // Avoid extra StringBuilder allocations from Expression
     if (rawValue.indexOf('$') == -1) {
@@ -52,8 +53,8 @@ public class InterpolationSupport {
       } else if (resolveContext.hasDefault()) {
         resolveContext.expandDefault();
       } else {
-        throw new CliException(String.format("Could not expand value %s in expression %s",
-            resolveContext.getKey(), rawValue));
+        String errMessage = msg.couldNotExpandValueInExpression(resolveContext.getKey(), rawValue);
+        throw new CliException(errMessage);
       }
     });
   }
