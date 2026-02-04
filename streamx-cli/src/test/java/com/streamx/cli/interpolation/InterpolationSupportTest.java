@@ -3,9 +3,9 @@ package com.streamx.cli.interpolation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.streamx.cli.framework.CliException;
 import io.quarkus.test.component.QuarkusComponentTest;
 import jakarta.inject.Inject;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -78,7 +78,7 @@ public class InterpolationSupportTest {
     // Case where property is not defined
     String rawValue = "${undefined.property}";
 
-    assertThrows(NoSuchElementException.class,
+    assertThrows(CliException.class,
         () -> interpolationSupport.expand(rawValue),
         "Could not expand value undefined.property in expression ${undefined.property}");
   }

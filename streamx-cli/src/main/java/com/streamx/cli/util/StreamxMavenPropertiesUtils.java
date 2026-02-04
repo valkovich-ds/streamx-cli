@@ -1,5 +1,6 @@
 package com.streamx.cli.util;
 
+import com.streamx.cli.framework.CliException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
@@ -18,7 +19,7 @@ public class StreamxMavenPropertiesUtils {
 
         properties = loadedProperties;
       } catch (IOException e) {
-        throw new RuntimeException(e);
+        throw new CliException("Failed to initialize streamx-maven properties", e);
       }
     }
 

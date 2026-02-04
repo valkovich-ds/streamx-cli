@@ -2,9 +2,9 @@ package com.streamx.cli.interpolation;
 
 import static io.smallrye.common.expression.Expression.Flag;
 
+import com.streamx.cli.framework.CliException;
 import io.smallrye.common.expression.Expression;
 import jakarta.enterprise.context.Dependent;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import org.eclipse.microprofile.config.Config;
@@ -52,7 +52,7 @@ public class InterpolationSupport {
       } else if (resolveContext.hasDefault()) {
         resolveContext.expandDefault();
       } else {
-        throw new NoSuchElementException(String.format("Could not expand value %s in expression %s",
+        throw new CliException(String.format("Could not expand value %s in expression %s",
             resolveContext.getKey(), rawValue));
       }
     });

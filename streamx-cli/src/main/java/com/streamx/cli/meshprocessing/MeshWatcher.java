@@ -2,6 +2,7 @@ package com.streamx.cli.meshprocessing;
 
 import static com.streamx.cli.util.Output.print;
 
+import com.streamx.cli.framework.CliException;
 import io.quarkus.scheduler.Scheduled.ConcurrentExecution;
 import io.quarkus.scheduler.Scheduler;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -69,7 +70,7 @@ public class MeshWatcher {
           .setInterval("500ms")
           .schedule();
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new CliException("Failed to watch mesh changes", e);
     }
   }
 

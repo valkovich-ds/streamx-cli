@@ -125,12 +125,7 @@ class CommandResultTest {
         }
         """.strip();
 
-    String output;
-    try {
-      output = commandResult.toText(OutputFormat.json, null);
-    } catch (CliException e) {
-      throw new RuntimeException(e);
-    }
+    String output = commandResult.toText(OutputFormat.json, null);
 
     assertEquals(expectedOutput, output);
   }
@@ -168,12 +163,7 @@ class CommandResultTest {
           nestedObjects: null
         """.strip();
 
-    String output;
-    try {
-      output = commandResult.toText(OutputFormat.yaml, null);
-    } catch (CliException e) {
-      throw new RuntimeException(e);
-    }
+    String output = commandResult.toText(OutputFormat.yaml, null);
 
     assertEquals(expectedOutput, output);
   }
@@ -182,14 +172,8 @@ class CommandResultTest {
   void shouldHandleNullResultGracefully() {
     CommandResult<TestObject> commandResult = new CommandResult<>(null);
 
-    String jsonOutput;
-    String yamlOutput;
-    try {
-      jsonOutput = commandResult.toText(OutputFormat.json, null);
-      yamlOutput = commandResult.toText(OutputFormat.yaml, null);
-    } catch (CliException e) {
-      throw new RuntimeException(e);
-    }
+    String jsonOutput = commandResult.toText(OutputFormat.json, null);
+    String yamlOutput  = commandResult.toText(OutputFormat.yaml, null);
 
     assertEquals("null", jsonOutput);
     assertEquals("null", yamlOutput);
