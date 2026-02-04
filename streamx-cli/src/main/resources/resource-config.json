@@ -1,0 +1,25 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": ".*\\.properties$"
+      },
+      {
+        "pattern": ".*\\.yml$"
+      },
+      {
+        "pattern": ".*\\.yaml$"
+      },
+      {
+        "pattern": ".*\\.json$"
+      },
+      {
+        "pattern": "org/testcontainers/.*"
+      },
+      {
+        "pattern": "com/github/dockerjava/.*"
+      }
+    ]
+  },
+  "bundles": []
+}

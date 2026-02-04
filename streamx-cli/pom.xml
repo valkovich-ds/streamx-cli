@@ -184,11 +184,36 @@
       <artifactId>kubernetes-model-apiextensions</artifactId>
     </dependency>
 
+    <!-- Required for GraalVM native build -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-jwt-build</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.fusesource.jansi</groupId>
+      <artifactId>jansi</artifactId>
+      <version>2.4.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jline</groupId>
+      <artifactId>jline</artifactId>
+      <version>3.25.1</version>
+    </dependency>
+
     <!-- Transitive dependencies from the temporary local StreamX dependencies -->
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
       <version>2.0.3</version>
+      <exclusions>
+        <!-- REMOVE Windows named pipe support -->
+        <exclusion>
+          <groupId>com.github.docker-java</groupId>
+          <artifactId>docker-java-transport-npipe</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Testing Dependencies -->
@@ -339,6 +364,23 @@
       <properties>
         <skipITs>false</skipITs>
         <quarkus.package.type>native</quarkus.package.type>
+        <quarkus.native.enable-metadata-repository>true</quarkus.native.enable-metadata-repository>
+<!--        <quarkus.native.enable-jni>true</quarkus.native.enable-jni>-->
+        <quarkus.native.enable-all-security-services>true</quarkus.native.enable-all-security-services>
+        <quarkus.native.resources.includes>reflection-config.json,resource-config.json</quarkus.native.resources.includes>
+        <quarkus.native.additional-build-args>
+          --initialize-at-run-time=org.jline
+          --initialize-at-run-time=org.fusesource
+          --initialize-at-run-time=org.testcontainers
+          --initialize-at-run-time=com.github.dockerjava
+          --initialize-at-run-time=io.smallrye.jwt
+          --initialize-at-run-time=com.streamx
+          --initialize-at-run-time=com.sun.jna
+          -H:+UnlockExperimentalVMOptions
+          -H:+AddAllCharsets
+          -H:ReflectionConfigurationResources=reflection-config.json
+          -H:ResourceConfigurationResources=resource-config.json
+        </quarkus.native.additional-build-args>
       </properties>
     </profile>
   </profiles>
