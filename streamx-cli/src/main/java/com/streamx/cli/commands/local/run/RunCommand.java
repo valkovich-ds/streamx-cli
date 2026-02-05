@@ -33,25 +33,36 @@ public class RunCommand extends AbstractSilentCommand {
 
   @Override
   public CommandResult<Void> runCommand() {
+    System.out.println("A");
     if (!meshPath.toFile().exists()) {
+      System.out.println("B");
       throw new CliException(msg.meshFileNotFound(meshPath.toString()));
     }
 
+    System.out.println("C");
     try {
+      System.out.println("CC");
       meshManager.initializeMesh(meshPath);
 
+      System.out.println("CCC");
       BannerPrinter.printBanner();
       meshManager.initializeRunMode(meshPath);
+      System.out.println("CCCC");
 
       meshManager.start();
+      System.out.println("CCCCC");
 
       return new CommandResult<>(null);
     } catch (ContainerStartupTimeoutException e) {
+      System.out.println("D");
       String errMessage = msg.dockerContainerStartupFailed(
           e.getContainerName(),
           runner.getContext().getStreamxBaseConfig().getContainerStartupTimeout()
       );
       throw new CliException(errMessage, e);
+    } catch (Exception e) {
+      System.out.println("E");
+      throw new CliException(msg.failedToStartMeshContainers(e.getMessage()), e);
     }
   }
 }

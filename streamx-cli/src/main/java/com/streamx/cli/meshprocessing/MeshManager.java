@@ -41,11 +41,15 @@ public class MeshManager {
   private boolean firstStart = true;
 
   public void initializeMesh(Path meshPath) {
+    System.out.println("I");
     this.meshPath = meshPath;
     this.normalizedMeshPath = meshPath.toAbsolutePath().normalize();
+    System.out.println("II");
     this.meshPathAsString = normalizedMeshPath.toString();
 
+    System.out.println("III");
     this.serviceMesh = resolveMeshDefinition(meshPath);;
+    System.out.println("IIII");
   }
 
   public void initializeRunMode(Path meshPath) {
@@ -100,8 +104,13 @@ public class MeshManager {
   @NotNull
   private ServiceMesh resolveMeshDefinition(Path meshPath) {
     try {
-      return meshDefinitionResolver.resolve(meshPath);
+      System.out.println("resolveMeshDefinition " + meshPath.toString());
+      var a = meshDefinitionResolver.resolve(meshPath);
+      System.out.println("resolveMeshDefinition resolved");
+
+      return a;
     } catch (Exception e) {
+      System.out.println("resolveMeshDefinition exception " + e.getMessage());
       throw getMeshException(meshPath, e);
     }
   }

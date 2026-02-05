@@ -1,0 +1,1 @@
+com.streamx.cli.nativeimage.DockerJavaFeature

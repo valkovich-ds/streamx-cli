@@ -16,6 +16,10 @@ public class MeshDefinitionResolver {
   ObjectMapper objectMapper;
 
   public ServiceMesh resolve(Path meshPath) throws IOException {
-    return objectMapper.readValue(meshPath.toFile(), ServiceMesh.class);
+    System.out.println("MeshDefinitionResolver " + meshPath.toString());
+    var b = objectMapper.readValue(meshPath.toFile(), ServiceMesh.class);
+    System.out.println("MeshDefinitionResolver read value");
+
+    return b;
   }
 }

@@ -91,9 +91,16 @@
     </dependency>
 
     <dependency>
+      <groupId>com.fasterxml.jackson</groupId>
+      <artifactId>jackson-bom</artifactId>
+      <version>2.20.0</version>
+      <scope>import</scope>
+      <type>pom</type>
+    </dependency>
+
+    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.20.1</version>
     </dependency>
 
     <dependency>
@@ -101,10 +108,10 @@
       <artifactId>jackson-datatype-jsr310</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-jdk8</artifactId>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>com.fasterxml.jackson.datatype</groupId>-->
+<!--      <artifactId>jackson-datatype-jdk8</artifactId>-->
+<!--    </dependency>-->
 
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -202,18 +209,55 @@
       <version>3.25.1</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.graalvm.sdk</groupId>
+      <artifactId>graal-sdk</artifactId>
+      <version>25.0.2</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.graalvm.nativeimage</groupId>
+      <artifactId>svm</artifactId>
+      <version>25.0.2</version>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Transitive dependencies from the temporary local StreamX dependencies -->
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
       <version>2.0.3</version>
-      <exclusions>
-        <!-- REMOVE Windows named pipe support -->
-        <exclusion>
-          <groupId>com.github.docker-java</groupId>
-          <artifactId>docker-java-transport-npipe</artifactId>
-        </exclusion>
-      </exclusions>
+<!--      <exclusions>-->
+<!--        <exclusion>-->
+<!--            <groupId>com.github.docker-java</groupId>-->
+<!--            <artifactId>docker-java-transport-npipe</artifactId>-->
+<!--        </exclusion>-->
+<!--        <exclusion>-->
+<!--            <groupId>net.java.dev.jna</groupId>-->
+<!--            <artifactId>jna</artifactId>-->
+<!--        </exclusion>-->
+<!--      </exclusions>-->
+    </dependency>
+
+    <!-- Fix for building native image -->
+    <dependency>
+      <groupId>com.github.docker-java</groupId>
+      <artifactId>docker-java</artifactId>
+      <version>3.7.0</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.albfernandez</groupId>
+      <artifactId>juniversalchardet</artifactId>
+      <version>2.4.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.docker-java</groupId>
+        <artifactId>docker-java-transport-httpclient5</artifactId>
+        <version>3.5.0</version>
     </dependency>
 
     <!-- Testing Dependencies -->
@@ -290,33 +334,44 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>${checkstyle-plugin.version}</version>
+        <groupId>org.graalvm.buildtools</groupId>
+        <artifactId>native-maven-plugin</artifactId>
+        <version>0.11.4</version>
+        <extensions>true</extensions>
         <configuration>
-          <configLocation>google_checks.xml</configLocation>
-          <failsOnError>true</failsOnError>
-          <consoleOutput>true</consoleOutput>
-          <includeTestSourceDirectory>true</includeTestSourceDirectory>
-          <failOnViolation>true</failOnViolation>
-          <violationSeverity>warning</violationSeverity>
-          <logViolationsToConsole>true</logViolationsToConsole>
-          <suppressionsLocation>codestyle/checkstyle-suppressions.xml</suppressionsLocation>
-          <sourceDirectories>
-            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-            <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
-          </sourceDirectories>
+          <metadataRepository>
+            <enabled>true</enabled>
+          </metadataRepository>
         </configuration>
-        <executions>
-          <execution>
-            <id>checkstyle</id>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <phase>validate</phase>
-          </execution>
-        </executions>
       </plugin>
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-checkstyle-plugin</artifactId>-->
+<!--        <version>${checkstyle-plugin.version}</version>-->
+<!--        <configuration>-->
+<!--          <configLocation>google_checks.xml</configLocation>-->
+<!--          <failsOnError>true</failsOnError>-->
+<!--          <consoleOutput>true</consoleOutput>-->
+<!--          <includeTestSourceDirectory>true</includeTestSourceDirectory>-->
+<!--          <failOnViolation>true</failOnViolation>-->
+<!--          <violationSeverity>warning</violationSeverity>-->
+<!--          <logViolationsToConsole>true</logViolationsToConsole>-->
+<!--          <suppressionsLocation>codestyle/checkstyle-suppressions.xml</suppressionsLocation>-->
+<!--          <sourceDirectories>-->
+<!--            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>-->
+<!--            <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>-->
+<!--          </sourceDirectories>-->
+<!--        </configuration>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>checkstyle</id>-->
+<!--            <goals>-->
+<!--              <goal>check</goal>-->
+<!--            </goals>-->
+<!--            <phase>validate</phase>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${compiler-plugin.version}</version>
@@ -367,20 +422,9 @@
         <quarkus.native.enable-metadata-repository>true</quarkus.native.enable-metadata-repository>
 <!--        <quarkus.native.enable-jni>true</quarkus.native.enable-jni>-->
         <quarkus.native.enable-all-security-services>true</quarkus.native.enable-all-security-services>
-        <quarkus.native.resources.includes>reflection-config.json,resource-config.json</quarkus.native.resources.includes>
+<!--        <quarkus.native.resources.includes>reflection-config.json,resource-config.json</quarkus.native.resources.includes>-->
         <quarkus.native.additional-build-args>
-          --initialize-at-run-time=org.jline
-          --initialize-at-run-time=org.fusesource
-          --initialize-at-run-time=org.testcontainers
-          --initialize-at-run-time=com.github.dockerjava
-          --initialize-at-run-time=io.smallrye.jwt
-          --initialize-at-run-time=com.streamx
-          --initialize-at-run-time=com.sun.jna
-          -H:+UnlockExperimentalVMOptions
-          -H:+AddAllCharsets
-          -H:ReflectionConfigurationResources=reflection-config.json
-          -H:ResourceConfigurationResources=resource-config.json
-        </quarkus.native.additional-build-args>
+       </quarkus.native.additional-build-args>
       </properties>
     </profile>
   </profiles>

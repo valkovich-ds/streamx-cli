@@ -104,12 +104,15 @@ public abstract class AbstractCommand<ResultT> implements Runnable {
     int exitCode = 0;
 
     try {
+      System.out.println("XX");
       CommandResult<ResultT> result = this.runCommand();
+      System.out.println("ZZ");
       String textOutput = result.toText(output, this::getTextOutput);
       if (!textOutput.isEmpty()) {
         System.out.println(textOutput);
       }
     } catch (Exception e) {
+      System.out.println("Got error");
       exitCode = ShortErrorMessageHandler.shortErrorMessage(e, spec.commandLine());
       if (verbose) {
         // Print exception stacktrace
