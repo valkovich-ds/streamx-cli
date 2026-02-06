@@ -10,13 +10,13 @@
   <version>2.0.0-SNAPSHOT</version>
 
   <properties>
-    <maven.compiler.source>25</maven.compiler.source>
-    <maven.compiler.target>25</maven.compiler.target>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <quarkus.platform.version>3.31.2</quarkus.platform.version>
+    <quarkus.platform.version>3.30.6</quarkus.platform.version>
     <surefire-plugin.version>3.2.5</surefire-plugin.version>
-    <compiler-plugin.version>3.15.0</compiler-plugin.version>
+    <compiler-plugin.version>3.13.0</compiler-plugin.version>
     <checkstyle-plugin.version>3.6.0</checkstyle-plugin.version>
   </properties>
 
@@ -98,21 +98,14 @@
       <type>pom</type>
     </dependency>
 
-<!--    <dependency>-->
-<!--      <groupId>tools.jackson.module</groupId>-->
-<!--      <artifactId>jackson-module-parameter-names</artifactId>-->
-<!--    </dependency>-->
-
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>tools.jackson.datatype</groupId>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>3.0.0-rc2</version>
-      <scope>compile</scope>
     </dependency>
 
 <!--    <dependency>-->
@@ -152,30 +145,40 @@
       <groupId>com.streamx</groupId>
       <artifactId>streamx-runner</artifactId>
       <version>2.0.10</version>
+      <scope>system</scope>
+      <systemPath>/home/visortelle/.m2/repository/com/streamx/streamx-runner/2.0.10/streamx-runner-2.0.10.jar</systemPath>
     </dependency>
 
     <dependency>
       <groupId>com.streamx</groupId>
       <artifactId>cloudevents-serialization</artifactId>
       <version>2.0.10</version>
+      <scope>system</scope>
+      <systemPath>/home/visortelle/.m2/repository/com/streamx/cloudevents-serialization/2.0.10/cloudevents-serialization-2.0.10.jar</systemPath>
     </dependency>
 
     <dependency>
       <groupId>com.streamx</groupId>
       <artifactId>cloudevents-serialization-json</artifactId>
       <version>2.0.10</version>
+      <scope>system</scope>
+      <systemPath>/home/visortelle/.m2/repository/com/streamx/cloudevents-serialization-json/2.0.10/cloudevents-serialization-json-2.0.10.jar</systemPath>
     </dependency>
 
     <dependency>
       <groupId>com.streamx</groupId>
       <artifactId>ingestion-client</artifactId>
       <version>2.0.10</version>
+      <scope>system</scope>
+      <systemPath>/home/visortelle/.m2/repository/com/streamx/ingestion-client/2.0.10/ingestion-client-2.0.10.jar</systemPath>
     </dependency>
 
     <dependency>
       <groupId>com.streamx</groupId>
       <artifactId>mesh-model</artifactId>
       <version>2.0.10</version>
+      <scope>system</scope>
+      <systemPath>/home/visortelle/.m2/repository/com/streamx/mesh-model/2.0.10/mesh-model-2.0.10.jar</systemPath>
     </dependency>
 
     <dependency>
@@ -189,60 +192,6 @@
     </dependency>
 
     <!-- Required for GraalVM native build -->
-<!--    <dependency>-->
-<!--      <groupId>io.quarkus</groupId>-->
-<!--      <artifactId>quarkus-resteasy</artifactId>-->
-<!--    </dependency>-->
-<!--    <dependency>-->
-<!--      <groupId>io.quarkus</groupId>-->
-<!--      <artifactId>quarkus-resteasy-jackson</artifactId>-->
-<!--    </dependency>-->
-    <dependency>
-      <groupId>jakarta.activation</groupId>
-      <artifactId>jakarta.activation-api</artifactId>
-      <version>2.1.4</version>
-      <scope>compile</scope>
-    </dependency>
-
-    <!-- JAX-RS API -->
-    <dependency>
-      <groupId>javax.ws.rs</groupId>
-      <artifactId>javax.ws.rs-api</artifactId>
-      <version>2.1.1</version>
-    </dependency>
-
-    <!-- Activation -->
-    <dependency>
-      <groupId>com.sun.activation</groupId>
-      <artifactId>javax.activation</artifactId>
-      <version>1.2.0</version>
-    </dependency>
-
-    <!-- JAXB API -->
-    <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <version>2.3.1</version>
-    </dependency>
-
-    <!-- JAXB Runtime -->
-    <dependency>
-      <groupId>org.glassfish.jaxb</groupId>
-      <artifactId>jaxb-runtime</artifactId>
-      <version>2.3.9</version>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.ws.rs</groupId>
-      <artifactId>javax.ws.rs-api</artifactId>
-      <version>2.1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-rest-client-jaxrs</artifactId>
-      <scope>compile</scope>
-    </dependency>
-
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-jwt-build</artifactId>
@@ -385,22 +334,6 @@
         </executions>
       </plugin>
       <plugin>
-        <!-- TODO check if it needed with non-local streamx.* dependencies -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.5.1</version>
-        <configuration>
-          <artifactSet>
-            <excludes>
-              <exclude>org.glassfish.jersey.core:*</exclude>
-              <exclude>org.glassfish.jersey.connectors:*</exclude>
-              <exclude>org.glassfish.jersey.media:*</exclude>
-              <exclude>org.glassfish.jersey.inject:*</exclude>
-            </excludes>
-          </artifactSet>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.graalvm.buildtools</groupId>
         <artifactId>native-maven-plugin</artifactId>
         <version>0.11.4</version>
@@ -444,13 +377,6 @@
         <version>${compiler-plugin.version}</version>
         <configuration>
           <parameters>true</parameters>
-          <annotationProcessorPaths>
-            <path>
-              <groupId>org.jboss.logging</groupId>
-              <artifactId>jboss-logging-processor</artifactId>
-              <version>3.0.4.Final</version>
-            </path>
-          </annotationProcessorPaths>
         </configuration>
       </plugin>
       <plugin>
