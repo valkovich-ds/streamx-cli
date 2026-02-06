@@ -14,9 +14,6 @@ import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 @Dependent
 public class InterpolationSupport {
 
-  /**
-   * Adapted from {@link io.smallrye.config.ExpressionConfigSourceInterceptor}
-   */
   String expand(final String rawValue) {
     Objects.requireNonNull(rawValue, msg.expressionCannotBeNull());
 

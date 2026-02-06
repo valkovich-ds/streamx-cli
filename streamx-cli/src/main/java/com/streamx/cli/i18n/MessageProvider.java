@@ -1,161 +1,200 @@
 package com.streamx.cli.i18n;
 
 import com.streamx.runner.config.StreamxBaseConfig;
-import java.lang.invoke.MethodHandles;
-import org.jboss.logging.Messages;
-import org.jboss.logging.annotations.Message;
-import org.jboss.logging.annotations.MessageBundle;
 
-@MessageBundle(projectCode = "")
-public interface MessageProvider {
+public class MessageProvider {
 
-  MessageProvider msg = Messages.getBundle(MethodHandles.lookup(), MessageProvider.class);
+  public static final MessageProvider msg = new MessageProvider();
 
-  @Message(id = 100, value = "Unsupported output format")
-  String unsupportedOutputFormat();
+  public String unsupportedOutputFormat() {
+    return "Unsupported output format";
+  }
 
-  @Message(id = 101, value = "Try '%s%s' for more information on the available options.%n")
-  String tryForMoreInformationOnAvailableOptions(
+  public String tryForMoreInformationOnAvailableOptions(
       String qualifiedCommandName,
-      String helpOptionName
-  );
+      String helpOptionName) {
+    return String.format(
+        "Try '%s%s' for more information on the available options.%n",
+        qualifiedCommandName,
+        helpOptionName);
+  }
 
-  @Message(id = 102, value = "Failed to handle interactive input")
-  String failedToHandleInteractiveInput();
+  public String failedToHandleInteractiveInput() {
+    return "Failed to handle interactive input";
+  }
 
-  @Message(id = 103, value = "Unable to serialize JSON")
-  String unableToSerializeJson();
+  public String unableToSerializeJson() {
+    return "Unable to serialize JSON";
+  }
 
-  @Message(
-      id = 104,
-      value = """
-          ❌ Something went wrong while running the command.
-          
-          Please try again with `--verbose` for more details.
-          If the problem persists, report it here:
-          https://www.streamx.dev/contact-us.html
-          """
-  )
-  String somethingWentWrong();
+  public String somethingWentWrong() {
+    return """
+        ❌ Something went wrong while running the command.
+        
+        Please try again with `--verbose` for more details.
+        If the problem persists, report it here:
+        https://www.streamx.dev/contact-us.html
+        """;
+  }
 
-  @Message(id = 105, value = "No such settings property found: %s")
-  String noSettingsPropertyFound(String key);
+  public String noSettingsPropertyFound(String key) {
+    return String.format("No such settings property found: %s", key);
+  }
 
-  @Message(id = 106, value = "Unable to get settings property")
-  String unableToGetSettingsProperty();
+  public String unableToGetSettingsProperty() {
+    return "Unable to get settings property";
+  }
 
-  @Message(id = 107, value = "Failed to load properties from: %s")
-  String failedToLoadPropertiesFrom(String path);
+  public String failedToLoadPropertiesFrom(String path) {
+    return String.format("Failed to load properties from: %s", path);
+  }
 
-  @Message(id = 108, value = "Unable to set settings property")
-  String unableToSetSettingsProperty();
+  public String unableToSetSettingsProperty() {
+    return "Unable to set settings property";
+  }
 
-  @Message(id = 109, value = "Unable to get settings file path")
-  String unableToGetSettingsFilePath();
+  public String unableToGetSettingsFilePath() {
+    return "Unable to get settings file path";
+  }
 
-  @Message(
-      id = 110,
-      value = """
+  public String dockerContainerStartupFailed(String containerName, Long timeoutSecs) {
+    return String.format(
+        """
         Timeout exceeded waiting for the container "%s" after %d seconds.
                 
-        Try increasing the timeout by setting the """
-          + StreamxBaseConfig.PN_CONTAINER_STARTUP_TIMEOUT_SECONDS + " property."
-  )
-  String dockerContainerStartupFailed(String containerName, Long timeoutSecs);
+        Try increasing the timeout by setting the %s property.""",
+        containerName,
+        timeoutSecs,
+        StreamxBaseConfig.PN_CONTAINER_STARTUP_TIMEOUT_SECONDS);
+  }
 
-  @Message(id = 111, value = "Failed to start mesh containers. %s")
-  String failedToStartMeshContainers(String reason);
+  public String failedToStartMeshContainers(String reason) {
+    return String.format("Failed to start mesh containers. %s", reason);
+  }
 
-  @Message(id = 112, value = """
+  public String invalidDockerEnvironment() {
+    return """
         Could not find a valid Docker environment.
 
         Make sure that:
          * Docker is installed,
-         * Docker is running""")
-  String invalidDockerEnvironment();
+         * Docker is running""";
+  }
 
-  @Message(id = 113, value = "🟢 %s ready.")
-  String dockerContainerStarted(String containerName);
+  public String dockerContainerStarted(String containerName) {
+    return String.format("🟢 %s ready.", containerName);
+  }
 
-  @Message(id = 114, value = "🟢 %s stopped.")
-  String dockerContainerStopped(String containerName);
+  public String dockerContainerStopped(String containerName) {
+    return String.format("🟢 %s stopped.", containerName);
+  }
 
-  @Message(id = 115, value = "❌ %s failed.")
-  String dockerContainerFailed(String containerName);
+  public String dockerContainerFailed(String containerName) {
+    return String.format("❌ %s failed.", containerName);
+  }
 
-  @Message(id = 116, value = "Mesh file deleted. Stopping...")
-  String meshFileDeleted();
+  public String meshFileDeleted() {
+    return "Mesh file deleted. Stopping...";
+  }
 
-  @Message(id = 117, value = "Mesh stopped.")
-  String meshStopped();
+  public String meshStopped() {
+    return "Mesh stopped.";
+  }
 
-  @Message(id = 118, value = "Unknown action: %s. Skipping...")
-  String skippingUnknownAction(String action);
+  public String skippingUnknownAction(String action) {
+    return String.format("Unknown action: %s. Skipping...", action);
+  }
 
-  @Message(id = 119, value = "Failed to watch mesh changes.")
-  String failedToWatchMeshChanges();
+  public String failedToWatchMeshChanges() {
+    return "Failed to watch mesh changes.";
+  }
 
-  @Message(id = 120, value = "Setting up system containers...")
-  String settingUpSystemContainers();
+  public String settingUpSystemContainers() {
+    return "Setting up system containers...";
+  }
 
-  @Message(id = 121, value = "Starting DX mesh...")
-  String startingMesh();
+  public String startingMesh() {
+    return "Starting DX mesh...";
+  }
 
-  @Message(id = 122, value = "Stopping DX mesh...")
-  String stoppingMesh();
+  public String stoppingMesh() {
+    return "Stopping DX mesh...";
+  }
 
-  @Message(id = 123, value = """
-      Unable to read mesh definition from %s.
-      
-      Details:
-      %s""")
-  String unableToReadMeshDefinition(String fromPath, String details);
-
-  @Message(id = 124, value = "Mesh definition is invalid. Skip reloading...")
-  String meshDefinitionIsInvalidSkipReload();
-
-  @Message(id = 125, value = "Mesh definition is unchanged. Skip reloading...")
-  String meshDefinitionIsUnchangedSkipReload();
-
-  @Message(id = 126, value = "Mesh file changed. Processing full reload...")
-  String meshFileChangedFullReload();
-
-  @Message(id = 127, value = "Mesh file changed. Processing incremental reload...")
-  String meshFileChangedIncrementalReload();
-
-  @Message(id = 128, value = "Mesh reloaded.")
-  String meshReloaded();
-
-  @Message(id = 129, value = "Mesh reload failed.")
-  String meshReloadFailed();
-
-  @Message(id = 130, value = """
-      %s
+  public String unableToReadMeshDefinition(String fromPath, String details) {
+    return String.format(
+        """
+        Unable to read mesh definition from %s.
         
-      Full logs can be found in %s""")
-  String fullLogsCanBeFoundIn(String originalMessage, String logPath);
+        Details:
+        %s""",
+        fromPath,
+        details);
+  }
 
-  @Message(id = 131, value = "Execution exception occurred.")
-  String executionExceptionOccurred();
+  public String meshDefinitionIsInvalidSkipReload() {
+    return "Mesh definition is invalid. Skip reloading...";
+  }
 
-  @Message(id = 132, value = "Input path must not be null")
-  String inputPathMustNotBeNull();
+  public String meshDefinitionIsUnchangedSkipReload() {
+    return "Mesh definition is unchanged. Skip reloading...";
+  }
 
-  @Message(id = 133, value = "Path %s does not have %s parent levels.")
-  String pathDoesNotHaveParentLevels(String path, int parentLevelsCount);
+  public String meshFileChangedFullReload() {
+    return "Mesh file changed. Processing full reload...";
+  }
 
-  @Message(id = 134, value = "Failed to initialize streamx-maven properties.")
-  String failedToInitializeStreamxMavenProperties();
+  public String meshFileChangedIncrementalReload() {
+    return "Mesh file changed. Processing incremental reload...";
+  }
 
-  @Message(id = 135, value = "No version information included.")
-  String noVersionInformationIncluded();
+  public String meshReloaded() {
+    return "Mesh reloaded.";
+  }
 
-  @Message(id = 136, value = "Expression cannot be null")
-  String expressionCannotBeNull();
+  public String meshReloadFailed() {
+    return "Mesh reload failed.";
+  }
 
-  @Message(id = 137, value = "Could not expand value %s in expression %s")
-  String couldNotExpandValueInExpression(String key, String expression);
+  public String fullLogsCanBeFoundIn(String originalMessage, String logPath) {
+    return String.format(
+        """
+        %s
+          
+        Full logs can be found in %s""",
+        originalMessage,
+        logPath);
+  }
 
-  @Message(id = 138, value = "Mesh file not found at: %s")
-  String meshFileNotFound(String path);
+  public String executionExceptionOccurred() {
+    return "Execution exception occurred.";
+  }
+
+  public String inputPathMustNotBeNull() {
+    return "Input path must not be null";
+  }
+
+  public String pathDoesNotHaveParentLevels(String path, int parentLevelsCount) {
+    return String.format("Path %s does not have %s parent levels.", path, parentLevelsCount);
+  }
+
+  public String failedToInitializeStreamxMavenProperties() {
+    return "Failed to initialize streamx-maven properties.";
+  }
+
+  public String noVersionInformationIncluded() {
+    return "No version information included.";
+  }
+
+  public String expressionCannotBeNull() {
+    return "Expression cannot be null";
+  }
+
+  public String couldNotExpandValueInExpression(String key, String expression) {
+    return String.format("Could not expand value %s in expression %s", key, expression);
+  }
+
+  public String meshFileNotFound(String path) {
+    return String.format("Mesh file not found at: %s", path);
+  }
 }
