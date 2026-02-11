@@ -1,4 +1,4 @@
-package com.streamx.cli;
+package com.streamx.cli.commands;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,14 +11,14 @@ import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
 @QuarkusTest
-class MainTest {
+class StreamxCommandTest {
 
   @Inject
   CommandLine.IFactory factory;
 
   @Test
   void allCommandsAndSubcommandsShouldExtendAbstractCommand() {
-    CommandLine commandLine = new CommandLine(Main.class, factory);
+    CommandLine commandLine = new CommandLine(StreamxCommand.class, factory);
 
     Set<Class<?>> allCommandClasses = new HashSet<>();
     collectAllCommands(commandLine.getCommandSpec(), allCommandClasses);

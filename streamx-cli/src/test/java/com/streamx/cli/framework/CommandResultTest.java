@@ -72,14 +72,14 @@ class CommandResultTest {
         Nested Object String Value: %s
         Total Nested Objects: %d
         """.formatted(
-            cr.result.voidValue,
-            cr.result.booleanValue,
-            cr.result.longValue,
-            cr.result.floatValue,
-            cr.result.stringValue,
-            cr.result.nestedObject.longValue,
-            cr.result.nestedObject.stringValue,
-            cr.result.nestedObjects.size()
+            cr.getData().voidValue,
+            cr.getData().booleanValue,
+            cr.getData().longValue,
+            cr.getData().floatValue,
+            cr.getData().stringValue,
+            cr.getData().nestedObject.longValue,
+            cr.getData().nestedObject.stringValue,
+            cr.getData().nestedObjects.size()
         );
 
     String output = commandResult.toText(OutputFormat.text, textFormatter);
@@ -125,12 +125,7 @@ class CommandResultTest {
         }
         """.strip();
 
-    String output;
-    try {
-      output = commandResult.toText(OutputFormat.json, null);
-    } catch (CliException e) {
-      throw new RuntimeException(e);
-    }
+    String output = commandResult.toText(OutputFormat.json, null);
 
     assertEquals(expectedOutput, output);
   }
@@ -168,12 +163,7 @@ class CommandResultTest {
           nestedObjects: null
         """.strip();
 
-    String output;
-    try {
-      output = commandResult.toText(OutputFormat.yaml, null);
-    } catch (CliException e) {
-      throw new RuntimeException(e);
-    }
+    String output = commandResult.toText(OutputFormat.yaml, null);
 
     assertEquals(expectedOutput, output);
   }
@@ -182,25 +172,19 @@ class CommandResultTest {
   void shouldHandleNullResultGracefully() {
     CommandResult<TestObject> commandResult = new CommandResult<>(null);
 
-    String jsonOutput;
-    String yamlOutput;
-    try {
-      jsonOutput = commandResult.toText(OutputFormat.json, null);
-      yamlOutput = commandResult.toText(OutputFormat.yaml, null);
-    } catch (CliException e) {
-      throw new RuntimeException(e);
-    }
+    String jsonOutput = commandResult.toText(OutputFormat.json, null);
+    String yamlOutput  = commandResult.toText(OutputFormat.yaml, null);
 
     assertEquals("null", jsonOutput);
     assertEquals("null", yamlOutput);
   }
 
   @Test
-  void shouldThrowRuntimeExceptionForUnserializableObject() {
+  void shouldThrowCliExceptionForUnserializableObject() {
     UnserializableObject unserializable = new UnserializableObject();
     CommandResult<UnserializableObject> commandResult = new CommandResult<>(unserializable);
 
-    assertThrows(RuntimeException.class, () ->
+    assertThrows(CliException.class, () ->
         commandResult.toText(OutputFormat.json, null)
     );
   }
