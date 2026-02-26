@@ -4,6 +4,7 @@ import static com.streamx.cli.commands.util.MeshTestsUtils.cleanUpMesh;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.streamx.cli.commands.util.MeshStopper;
+import com.streamx.cli.test.annotation.DisabledIfDockerUnavailable;
 import com.streamx.runner.event.MeshStarted;
 import io.quarkus.arc.properties.IfBuildProperty;
 import io.quarkus.test.junit.QuarkusTestProfile;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 @QuarkusMainTest
+@DisabledIfDockerUnavailable
 @TestProfile(RunCommandTest.RunCommandProfile.class)
 public class RunCommandTest {
 
