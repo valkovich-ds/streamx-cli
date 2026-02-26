@@ -15,7 +15,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
+          # List of available images can be found here:
+          # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
+          - os: ubuntu-24.04
             name: linux-amd64
           - os: ubuntu-24.04-arm
             name: linux-arm64
@@ -40,7 +42,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '25'
-          distribution: 'graalce'
+          distribution: 'graalvm'
           cache: 'maven'
 
       - name: Run tests
