@@ -53,15 +53,15 @@ distributions:
 #        platform: linux-aarch_64
       - path: artifacts/streamx-macos-aarch64
         platform: osx-aarch_64
-#
-#packagers:
-#  brew:
-#    active: ALWAYS
-#    repository:
-#      owner: streamx-com
-#      name: homebrew-tap
-#      tagName: '{{projectName}}-{{tagName}}'
-#    formulaName: streamx
-#    multiPlatform: true
-#    livecheck:
-#      enabled: true
+
+packagers:
+  brew:
+    active: ALWAYS
+    repository:
+      owner: valkovich-ds
+      name: homebrew-tap
+      tagName: '{{projectName}}-{{tagName}}'
+    formulaName: streamx
+    multiPlatform: true
+    livecheck:
+      enabled: true
