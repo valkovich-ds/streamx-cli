@@ -13,38 +13,7 @@ permissions:
   contents: read
 
 jobs:
-  # Running Docker on MacOS runner is very slow because this type of runner
-  # can't use nested virtualization and uses QEMU.
-  # We would wait hours to finish the build.
-  # We need Docker only during tests. Because of this, we run test as a separate job on Linux.
-  test:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-
-      - id: 'auth'
-        name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v2'
-        with:
-          workload_identity_provider: ${{ secrets.GCP_STREAMX_RELEASES_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_STREAMX_RELEASES_RELEASE_DEPLOY_SA }}
-
-      - uses: actions/setup-java@v5
-        with:
-          java-version: '25'
-          distribution: 'graalvm'
-          cache: 'maven'
-
-      - run: ./mvnw clean verify
-
-      - name: Upload reachability metadata
-        uses: actions/upload-artifact@v4
-        with:
-          name: reachability-metadata
-          path: '**/reachability-metadata.json'
-
   build:
-    needs: test
     strategy:
       fail-fast: false
       matrix:
@@ -83,14 +52,17 @@ jobs:
           distribution: 'graalvm'
           cache: 'maven'
 
-      - name: Download reachability metadata
-        uses: actions/download-artifact@v4
-        with:
-          name: reachability-metadata
+      - name: Setup Docker via Colima
+        if: runner.os == 'macOS'
+        run: |
+          brew install docker colima
+          colima start --vm-type=vz --memory 4 --cpu 3
+          sudo ln -sf "$HOME/.colima/default/docker.sock" /var/run/docker.sock
+          docker info
 
       - name: Build native-image executable
         run: |
-          ./mvnw clean verify -Dnative -DskipTests
+          ./mvnw clean verify -Dnative
 
       - name: Prepare artifact
         run: |
