@@ -67,5 +67,3 @@ packagers:
       tagName: '{{projectName}}-{{tagName}}'
     formulaName: streamx
     multiPlatform: true
-    livecheck:
-      enabled: true
