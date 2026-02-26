@@ -95,6 +95,13 @@ jobs:
       - name: Setup Docker for macOS
         if: runner.os == 'macOS' && runner.arch == 'X64'
         uses: docker/setup-docker-action@v4
+        with:
+          set-host: true
+      - name: Symlink Docker socket for macOS
+        if: runner.os == 'macOS' && runner.arch == 'X64'
+        run: |
+          SOCK="${DOCKER_HOST#unix://}"
+          sudo ln -sf "$SOCK" /var/run/docker.sock
 
       - name: Build native-image executable
         run: |
