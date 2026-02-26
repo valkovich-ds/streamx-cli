@@ -3,7 +3,7 @@ project:
   description: StreamX CLI
   license: Apache-2.0
   links:
-    homepage: https://github.com/streamx/streamx-cli
+    homepage: https://github.com/streamx-com/streamx-cli
   authors:
     - streamx
   inceptionYear: '2026'
@@ -32,10 +32,10 @@ assemble:
           platform: linux-x86_64
           extraProperties:
             graalVMNativeImage: true
-        - path: artifacts/streamx-cli-linux-aarch64
-          platform: linux-aarch_64
-          extraProperties:
-            graalVMNativeImage: true
+#        - path: artifacts/streamx-cli-linux-aarch64
+#          platform: linux-aarch_64
+#          extraProperties:
+#            graalVMNativeImage: true
         - path: artifacts/streamx-cli-macos-aarch64
           platform: osx-x86_64
           extraProperties:
@@ -49,19 +49,19 @@ distributions:
     artifacts:
       - path: artifacts/streamx-linux-x86_64
         platform: linux-x86_64
-      - path: artifacts/streamx-linux-aarch64
-        platform: linux-aarch_64
+#      - path: artifacts/streamx-linux-aarch64
+#        platform: linux-aarch_64
       - path: artifacts/streamx-macos-aarch64
         platform: osx-aarch_64
-
-packagers:
-  brew:
-    active: ALWAYS
-    repository:
-      owner: streamx
-      name: homebrew-tap
-      tagName: '{{projectName}}-{{tagName}}'
-    formulaName: streamx
-    multiPlatform: true
-    livecheck:
-      enabled: true
+#
+#packagers:
+#  brew:
+#    active: ALWAYS
+#    repository:
+#      owner: streamx-com
+#      name: homebrew-tap
+#      tagName: '{{projectName}}-{{tagName}}'
+#    formulaName: streamx
+#    multiPlatform: true
+#    livecheck:
+#      enabled: true

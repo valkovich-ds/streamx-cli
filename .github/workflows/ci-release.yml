@@ -2,8 +2,11 @@ name: 'Test: Release'
 
 on:
   push:
-#    branches:
-#      - main
+    branches:
+      - main
+      - native-build-2
+    tags:
+      - '*'
 
 permissions:
   id-token: write
@@ -106,7 +109,7 @@ jobs:
         run: ls -lR artifacts/
 
       - name: Set up JDK 25
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v5
         with:
           java-version: '25'
           distribution: 'graalvm'
