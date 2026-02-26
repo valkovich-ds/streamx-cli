@@ -12,6 +12,11 @@ project:
     - streamx
   inceptionYear: '2026'
 
+platform:
+  replacements:
+    osx-x86_64: macos-x86_64
+    osx-aarch_64: macos-aarch64
+
 release:
   github:
     overwrite: true
@@ -29,19 +34,19 @@ assemble:
       fileSets:
         - input: artifacts
           includes:
-            - 'streamx-cli-*'
+            - 'streamx-*'
           output: bin
       artifacts:
-        - path: artifacts/streamx-cli-linux-x86_64
+        - path: artifacts/streamx-linux-x86_64
           platform: linux-x86_64
           extraProperties:
             graalVMNativeImage: true
-#        - path: artifacts/streamx-cli-linux-aarch64
-#          platform: linux-aarch_64
-#          extraProperties:
-#            graalVMNativeImage: true
-        - path: artifacts/streamx-cli-macos-aarch64
-          platform: osx-x86_64
+        #        - path: artifacts/streamx-linux-aarch64
+        #          platform: linux-aarch_64
+        #          extraProperties:
+        #            graalVMNativeImage: true
+        - path: artifacts/streamx-macos-aarch64
+          platform: osx-aarch_64
           extraProperties:
             graalVMNativeImage: true
 
@@ -53,8 +58,8 @@ distributions:
     artifacts:
       - path: artifacts/streamx-linux-x86_64
         platform: linux-x86_64
-#      - path: artifacts/streamx-linux-aarch64
-#        platform: linux-aarch_64
+      #      - path: artifacts/streamx-linux-aarch64
+      #        platform: linux-aarch_64
       - path: artifacts/streamx-macos-aarch64
         platform: osx-aarch_64
 

@@ -177,8 +177,8 @@ jobs:
         with:
           name: jreleaser-output
           path: |
-            out/jreleaser/trace.log
-            out/jreleaser/output.properties
+            target/jreleaser/trace.log
+            target/jreleaser/output.properties
 
   brew-install-test:
     needs: release
