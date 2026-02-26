@@ -1,7 +1,11 @@
 project:
   name: streamx-cli
   description: StreamX CLI
-  license: Apache-2.0
+  versionPattern: SEMVER
+  snapshot:
+    pattern: .*-SNAPSHOT
+    label: early-access
+    fullChangelog: true
   links:
     homepage: https://github.com/streamx-com/streamx-cli
   authors:
