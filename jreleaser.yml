@@ -37,7 +37,7 @@ assemble:
           extraProperties:
             graalVMNativeImage: true
         - path: artifacts/streamx-cli-macos-aarch64
-          platform: osx-aarch_64
+          platform: osx-x86_64
           extraProperties:
             graalVMNativeImage: true
 

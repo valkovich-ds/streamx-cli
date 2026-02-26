@@ -10,6 +10,10 @@ permissions:
   contents: read
 
 jobs:
+  # Running Docker on MacOS runner is very slow because this type of runner
+  # can't use nested virtualization and uses QEMU.
+  # We would wait hours to finish the build.
+  # We need Docker only during tests. Because of this, we run test as a separate job on Linux.
   test:
     runs-on: ubuntu-24.04
     steps:
@@ -19,7 +23,9 @@ jobs:
           java-version: '25'
           distribution: 'graalvm'
           cache: 'maven'
+
       - run: ./mvnw clean verify
+
       - name: Upload reachability metadata
         uses: actions/upload-artifact@v4
         with:
@@ -38,9 +44,12 @@ jobs:
           - os: ubuntu-24.04-arm
             name: linux-arm64
             artifact: streamx-linux-aarch64
-          - os: macos-latest
+          - os: macos-15
             name: macos-arm64
             artifact: streamx-macos-aarch64
+          - os: macos-15-intel
+            name: macos-amd64
+            artifact: streamx-macos-x86_64
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.name }}-build
     steps:
@@ -68,7 +77,7 @@ jobs:
         with:
           name: reachability-metadata
 
-      - name: Run tests
+      - name: Build native-image executable
         run: |
           ./mvnw clean verify -Dnative -DskipTests
 
