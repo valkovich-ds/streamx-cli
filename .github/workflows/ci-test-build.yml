@@ -32,4 +32,11 @@ jobs:
 
       - name: Run tests
         run: |
-          ./mvnw clean verify -Dnative
+          .github/scripts/with-collect-docker-logs.sh ./mvnw clean verify -Dnative
+      - name: Upload Docker logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-logs
+          path: target/docker-logs/
+          if-no-files-found: ignore

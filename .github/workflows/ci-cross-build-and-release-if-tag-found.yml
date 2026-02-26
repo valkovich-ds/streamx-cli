@@ -42,7 +42,14 @@ jobs:
 
       - name: Run tests with native-image-agent
         run: |
-          ./mvnw test
+          .github/scripts/with-capture-docker-logs.sh ./mvnw test
+      - name: Upload Docker logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-logs-${{ matrix.name }}
+          path: target/docker-logs/
+          if-no-files-found: ignore
 
       - name: Upload reachability metadata
         uses: actions/upload-artifact@v4
@@ -105,7 +112,14 @@ jobs:
 
       - name: Build native-image executable
         run: |
-          ./mvnw clean verify -Dnative
+          .github/scripts/with-capture-docker-logs.sh ./mvnw clean verify -Dnative
+      - name: Upload Docker logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-logs-${{ matrix.name }}
+          path: target/docker-logs/
+          if-no-files-found: ignore
 
       - name: Prepare artifact
         run: |
