@@ -8,6 +8,18 @@ For more information, see the [StreamX CLI Reference](https://www.streamx.dev/gu
 
 ⚠️ Please read the [contributing guidelines](./CONTRIBUTING.md) if you're a developer and wish to contribute to the project.
 
+## Installation
+
+**Install latest version:**
+
+`curl -fsSL https://myorg.com/install.sh | sh`
+
+**Install specific version:**
+
+See the [available versions list](https://github.com/streamx-com/streamx-cli/releases)
+
+`curl -fsSL https://myorg.com/install.sh | VERSION=<version> sh`
+
 ## Configuration
 
 There are several ways of configuring and several properties to configure.
