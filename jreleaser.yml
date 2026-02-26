@@ -1,0 +1,67 @@
+project:
+  name: streamx-cli
+  description: StreamX CLI
+  license: Apache-2.0
+  links:
+    homepage: https://github.com/streamx/streamx-cli
+  authors:
+    - streamx
+  inceptionYear: '2026'
+
+release:
+  github:
+    overwrite: true
+    changelog:
+      formatted: ALWAYS
+      preset: conventional-commits
+
+assemble:
+  archive:
+    streamx-cli:
+      active: ALWAYS
+      formats:
+        - ZIP
+        - TAR_GZ
+      fileSets:
+        - input: artifacts
+          includes:
+            - 'streamx-cli-*'
+          output: bin
+      artifacts:
+        - path: artifacts/streamx-cli-linux-x86_64
+          platform: linux-x86_64
+          extraProperties:
+            graalVMNativeImage: true
+        - path: artifacts/streamx-cli-linux-aarch64
+          platform: linux-aarch_64
+          extraProperties:
+            graalVMNativeImage: true
+        - path: artifacts/streamx-cli-macos-aarch64
+          platform: osx-aarch_64
+          extraProperties:
+            graalVMNativeImage: true
+
+distributions:
+  streamx-cli:
+    type: NATIVE_IMAGE
+    executable:
+      name: streamx
+    artifacts:
+      - path: artifacts/streamx-linux-x86_64
+        platform: linux-x86_64
+      - path: artifacts/streamx-linux-aarch64
+        platform: linux-aarch_64
+      - path: artifacts/streamx-macos-aarch64
+        platform: osx-aarch_64
+
+packagers:
+  brew:
+    active: ALWAYS
+    repository:
+      owner: streamx
+      name: homebrew-tap
+      tagName: '{{projectName}}-{{tagName}}'
+    formulaName: streamx
+    multiPlatform: true
+    livecheck:
+      enabled: true
