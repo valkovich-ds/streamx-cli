@@ -45,6 +45,13 @@ jobs:
           distribution: 'graalvm'
           cache: 'maven'
 
+      - name: Set up Docker (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install docker colima
+          colima start
+          sudo ln -sf ${HOME}/.colima/default/docker.sock /var/run/docker.sock
+
       - name: Run tests
         run: |
           ./mvnw clean verify -Dnative
