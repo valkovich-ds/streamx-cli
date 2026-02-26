@@ -165,3 +165,30 @@ jobs:
           path: |
             out/jreleaser/trace.log
             out/jreleaser/output.properties
+
+  brew-install-test:
+    needs: release
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            name: linux-amd64
+          - os: macos-15
+            name: macos-arm64
+          - os: macos-15-intel
+            name: macos-amd64
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.name }}-brew-install-test
+    steps:
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@main
+
+      - name: Install streamx via Homebrew
+        env:
+          TAP_TAG: streamx-cli-${{ github.ref_name }}
+        run: |
+          brew install "https://raw.githubusercontent.com/valkovich-ds/homebrew-tap/${TAP_TAG}/Formula/streamx.rb"
+
+      - name: Smoke test
+        run: |
+          streamx --help
