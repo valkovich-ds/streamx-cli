@@ -98,7 +98,7 @@ jobs:
 
       - name: Build native-image executable
         run: |
-          ./mvnw clean verify -Dnative -DskipTests
+          ./mvnw clean verify -Dnative
 
       - name: Prepare artifact
         run: |
