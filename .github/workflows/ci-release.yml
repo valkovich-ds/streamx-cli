@@ -13,6 +13,9 @@ permissions:
   contents: read
 
 jobs:
+  # Docker doesn't work with macOS arm64 at this moment.
+  # Therefore, we can't run native image tracing agent during tests on this type of CI runner.
+  # Instead, we generate reachability-metadata in as a separte job, then copy it to next jobs.
   reachability-metadata:
     runs-on: ubuntu-24.04
     name: generate-reachability-metadata

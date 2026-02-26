@@ -1,10 +1,9 @@
 package com.streamx.cli.test.annotation;
 
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.extension.ConditionEvaluationResult;
 import org.junit.jupiter.api.extension.ExecutionCondition;
 import org.junit.jupiter.api.extension.ExtensionContext;
-
-import java.util.concurrent.TimeUnit;
 
 public class DockerAvailableCondition implements ExecutionCondition {
 
@@ -19,6 +18,7 @@ public class DockerAvailableCondition implements ExecutionCondition {
         return ConditionEvaluationResult.enabled("Docker is available");
       }
     } catch (Exception ignored) {
+      // ignore
     }
     return ConditionEvaluationResult.disabled("Docker is not available");
   }
