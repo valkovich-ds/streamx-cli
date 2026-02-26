@@ -12,13 +12,13 @@ For more information, see the [StreamX CLI Reference](https://www.streamx.dev/gu
 
 **Install latest version:**
 
-`curl -fsSL https://myorg.com/install.sh | sh`
+`curl -fsSL https://raw.githubusercontent.com/streamx-com/streamx-cli/refs/heads/main/install.sh | sh`
 
 **Install specific version:**
 
 See the [available versions list](https://github.com/streamx-com/streamx-cli/releases)
 
-`curl -fsSL https://myorg.com/install.sh | VERSION=<version> sh`
+`curl -fsSL https://raw.githubusercontent.com/streamx-com/streamx-cli/refs/heads/main/install.sh | VERSION=<version> sh`
 
 ## Configuration
 

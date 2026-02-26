@@ -9,6 +9,9 @@
 
 ## Development
 
+**IMPORTANT:** mark test which run StreamX mesh with the `DisabledIfDockerUnavaliable` annotation.
+Otherwise, CI will fail because at this moment Docker isn't supported on macOS arm64.
+
 - Enter Quarkus development console.
 
 `./mvnw quarkus:dev`
