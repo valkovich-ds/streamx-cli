@@ -55,7 +55,7 @@ jobs:
       - name: Setup Docker via Colima
         if: runner.os == 'macOS'
         run: |
-          brew install docker colima
+          brew install docker colima qemu
           colima start --vm-type=qemu --memory 4 --cpu 3 --arch aarch64
           sudo ln -sf "$HOME/.colima/default/docker.sock" /var/run/docker.sock
           docker info
