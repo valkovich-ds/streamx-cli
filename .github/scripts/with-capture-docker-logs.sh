@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 
 if ! command -v docker &> /dev/null; then
@@ -18,12 +17,12 @@ docker events --filter 'event=start' --format '{{.Actor.Attributes.name}} {{.ID}
 done &
 EVENTS_PID=$!
 
+cleanup() {
+  kill $EVENTS_PID 2>/dev/null || true
+  pkill -f "docker events --filter" 2>/dev/null || true
+  pkill -f "docker logs -f" 2>/dev/null || true
+  wait 2>/dev/null || true
+}
+trap cleanup EXIT
+
 "$@"
-EXIT_CODE=$?
-
-kill $EVENTS_PID 2>/dev/null || true
-# Kill any remaining background `docker logs -f` processes
-pkill -P $EVENTS_PID 2>/dev/null || true
-wait 2>/dev/null || true
-
-exit $EXIT_CODE
