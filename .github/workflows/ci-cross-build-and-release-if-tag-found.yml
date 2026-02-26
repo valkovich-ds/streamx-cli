@@ -152,9 +152,7 @@ jobs:
         run: ls -la artifacts/
 
       - name: Release with JReleaser
-        uses: jreleaser/release-action@v2
-        with:
-          arguments: full-release
+        run: ./mvnw jreleaser:full-release
         env:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}

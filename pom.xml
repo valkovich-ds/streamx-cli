@@ -312,6 +312,11 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.jreleaser</groupId>
+        <artifactId>jreleaser-maven-plugin</artifactId>
+        <version>1.22.0</version>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>${checkstyle-plugin.version}</version>
