@@ -20,15 +20,19 @@ jobs:
           - os: ubuntu-24.04
             name: linux-amd64
             artifact: streamx-linux-x86_64
+            skip-tests: false
 #          - os: ubuntu-24.04-arm
 #            name: linux-arm64
 #            artifact: streamx-linux-aarch64
+#             skip-tests: false
           - os: macos-15
             name: macos-arm64
             artifact: streamx-macos-aarch64
-#          - os: macos-15-intel
-#            name: macos-amd64
-#            artifact: streamx-macos-x86_64
+            skip-tests: true # Docker doesn't work on macOS arm64 runner type
+          - os: macos-15-intel
+            name: macos-amd64
+            artifact: streamx-macos-x86_64
+            skip-tests: false
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.name }}-build
     steps:
@@ -51,25 +55,13 @@ jobs:
           distribution: 'graalvm'
           cache: 'maven'
 
-      - name: Setup Docker via Colima
-        if: runner.os == 'macOS'
-        run: |
-          brew install curl docker colima qemu
-          
-          # Pre-download the VM image to Colima's cache
-          COLIMA_CACHE="$HOME/Library/Caches/colima/caches"
-          mkdir -p "$COLIMA_CACHE"
-          IMAGE_URL="https://github.com/abiosoft/colima-core/releases/download/v0.10.1/ubuntu-24.04-minimal-cloudimg-arm64-docker.qcow2"
-          IMAGE_FILE="$COLIMA_CACHE/$(echo -n "$IMAGE_URL" | shasum -a 256 | cut -d' ' -f1)"
-          curl -L --retry 3 --retry-delay 5 -o "$IMAGE_FILE" "$IMAGE_URL"
-          
-          colima start --vm-type=qemu --memory 4 --cpu 3 --arch aarch64
-          sudo ln -sf "$HOME/.colima/default/docker.sock" /var/run/docker.sock
-          docker info
+      - name: Setup Docker for macOS
+        if: runner.os == 'macOS' && matrix.skip-tests == false
+        uses: docker/setup-docker-action@v4
 
       - name: Build native-image executable
         run: |
-          ./mvnw clean verify -Dnative
+          ./mvnw clean verify -Dnative ${{ matrix.skip-tests == true && '-DskipTests' || '' }}
 
       - name: Prepare artifact
         run: |
