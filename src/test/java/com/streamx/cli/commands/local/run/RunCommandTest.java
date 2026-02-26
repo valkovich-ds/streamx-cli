@@ -16,6 +16,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.Map;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
@@ -29,6 +30,7 @@ public class RunCommandTest {
   @AfterEach
   void awaitDockerResourcesAreRemoved() {
     Awaitility.await()
+        .atMost(Duration.ofMinutes(2))
         .until(() -> {
           try {
             cleanUpMesh(
