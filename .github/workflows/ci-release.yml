@@ -15,7 +15,6 @@ permissions:
 jobs:
   build:
     strategy:
-      fail-fast: false
       matrix:
         include:
           - os: ubuntu-24.04
@@ -56,7 +55,7 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install curl docker colima qemu
-          colima start --vm-type=qemu --memory 4 --cpu 3 --arch aarch64
+          colima start --vm-type=vz --memory 4 --cpu 3
           sudo ln -sf "$HOME/.colima/default/docker.sock" /var/run/docker.sock
           docker info
 
