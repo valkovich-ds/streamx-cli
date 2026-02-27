@@ -115,7 +115,8 @@ jobs:
 
       - name: Build native-image executable
         run: |
-          .github/scripts/with-capture-docker-logs.sh ./mvnw clean verify -Dnative
+          ./mvnw clean
+          .github/scripts/with-capture-docker-logs.sh ./mvnw verify -Dnative
       - name: Upload Docker logs
         if: always()
         uses: actions/upload-artifact@v4
