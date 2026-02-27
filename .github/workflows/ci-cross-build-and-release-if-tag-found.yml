@@ -14,7 +14,6 @@ permissions:
 
 jobs:
   reachability-metadata:
-    if: github.event_name == 'push' || github.event.review.state == 'approved'
     runs-on: ubuntu-24.04
     name: generate-reachability-metadata
     steps:
