@@ -8,13 +8,13 @@ on:
     tags:
       - '*'
 
-permissions:
-  id-token: write
-  contents: write
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: write
 
 jobs:
   # Generate reachability metadata for native-image-agent.
