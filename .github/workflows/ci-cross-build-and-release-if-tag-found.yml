@@ -111,6 +111,8 @@ jobs:
         # Docker is not available on macOS arm64.
         if: runner.os == 'macOS' && runner.arch == 'X64'
         uses: docker/setup-docker-action@v4
+        env:
+          LIMA_START_ARGS: --cpus 4 --memory 8
         with:
           set-host: true
       - name: Symlink Docker socket for macOS
