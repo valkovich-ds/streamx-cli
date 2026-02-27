@@ -22,6 +22,8 @@ platform:
 release:
   github:
     overwrite: true
+    milestone:
+      close: false
     changelog:
       formatted: ALWAYS
       format: '- {{commitShortHash}} {{commitTitle}}'
