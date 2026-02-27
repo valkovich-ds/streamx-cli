@@ -62,7 +62,7 @@ packagers:
   brew:
     active: ALWAYS
     repository:
-      owner: valkovich-ds
+      owner: streamx-com
       name: homebrew-tap
       tagName: '{{projectName}}-{{tagName}}'
     formulaName: streamx

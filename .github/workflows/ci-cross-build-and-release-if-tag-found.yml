@@ -165,14 +165,20 @@ jobs:
           pattern: streamx-*
           merge-multiple: true
 
-      - name: List artifacts
-        run: ls -la artifacts/
-
-      - name: Make artifacts executable
-        run: chmod +x artifacts/streamx-*
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.GH_STREAMX_RELEASE_APP_ID }}
+          private-key: ${{ secrets.GH_STREAMX_RELEASE_APP_PRIVATE_KEY }}
+          owner: streamx-com
+          repositories: homebrew-tap
 
       - name: Release with JReleaser
-        run: ./mvnw jreleaser:assemble jreleaser:full-release -Djreleaser.strict=true
+        run: |
+          ls -la artifacts/
+          chmod +x artifacts/streamx-*
+          ./mvnw jreleaser:assemble jreleaser:full-release -Djreleaser.strict=true
         env:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
@@ -209,7 +215,7 @@ jobs:
         env:
           TAP_TAG: streamx-cli-v${{ github.ref_name }}
         run: |
-          brew install "https://raw.githubusercontent.com/valkovich-ds/homebrew-tap/${TAP_TAG}/Formula/streamx.rb"
+          brew install "https://raw.githubusercontent.com/streamx-com/homebrew-tap/${TAP_TAG}/Formula/streamx.rb"
 
       - name: Smoke test
         run: |
