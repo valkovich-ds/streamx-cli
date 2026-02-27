@@ -21,3 +21,7 @@ Otherwise, CI will fail because at this moment Docker isn't supported on macOS a
 ## Running tests
 
 `./mvnw test`
+
+## Release process
+
+Use `./release.sh <patch|minor|major>` script.

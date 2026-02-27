@@ -213,7 +213,7 @@ jobs:
 
       - name: Install streamx via Homebrew
         env:
-          TAP_TAG: streamx-cli-v${{ github.ref_name }}
+          TAP_TAG: streamx-${{ github.ref_name }}
         run: |
           brew install "https://raw.githubusercontent.com/streamx-com/homebrew-tap/${TAP_TAG}/Formula/streamx.rb"
 

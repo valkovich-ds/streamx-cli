@@ -22,6 +22,7 @@ platform:
 release:
   github:
     overwrite: true
+    tagName: '{{projectVersion}}'
     milestone:
       close: false
     changelog:
