@@ -4,10 +4,12 @@
 set -euo pipefail
 
 TYPE=${1:-patch}
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 # Get current version from pom.xml
 CURRENT=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 echo "Current version: $CURRENT"
+echo "Branch: $BRANCH"
 
 # Strip -SNAPSHOT
 BASE=${CURRENT%-SNAPSHOT}
@@ -45,6 +47,6 @@ git add pom.xml
 git commit -m "Prepare for next development iteration $NEXT"
 
 # Push
-git push origin main "$RELEASE"
+git push origin "$BRANCH" "$RELEASE"
 
-echo "Done! Follow the release job progress on CI. $RELEASE, now on $NEXT"
+echo "Done! Released $RELEASE, now on $NEXT"
