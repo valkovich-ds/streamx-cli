@@ -27,6 +27,35 @@ release:
       formatted: ALWAYS
       format: '- {{commitShortHash}} {{commitTitle}}'
 
+assemble:
+  archive:
+    streamx-cli:
+      active: ALWAYS
+      formats:
+        - ZIP
+        - TAR_GZ
+      fileSets:
+        - input: '.'
+          includes:
+            - 'LICENSE'
+      artifacts:
+        - path: artifacts/streamx-linux-x86_64
+          platform: linux-x86_64
+          extraProperties:
+            graalVMNativeImage: true
+        - path: artifacts/streamx-linux-aarch64
+          platform: linux-aarch_64
+          extraProperties:
+            graalVMNativeImage: true
+#        - path: artifacts/streamx-macos-x86_64
+#          platform: osx-x86_64
+#          extraProperties:
+#            graalVMNativeImage: true
+        - path: artifacts/streamx-macos-aarch64
+          platform: osx-aarch_64
+          extraProperties:
+            graalVMNativeImage: true
+
 distributions:
   streamx-cli:
     type: NATIVE_IMAGE
