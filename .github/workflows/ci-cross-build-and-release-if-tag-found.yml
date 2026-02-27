@@ -143,6 +143,13 @@ jobs:
     runs-on: ubuntu-24.04
     name: release
     steps:
+      - name: Verify tag is on main
+        run: |
+          if ! git branch -r --contains ${{ github.sha }} | grep -q 'origin/main'; then
+            echo "Error: Tag is not on main branch. Cancel release process."
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
