@@ -56,4 +56,4 @@ git commit -m "Prepare for next development iteration $NEXT [skip ci]"
 git push origin "$BRANCH"
 git push origin "$RELEASE"
 
-echo "Done! Released $RELEASE, now on $NEXT"
+echo "Done! Release $RELEASE started. Follow the CI job progress. Updated to $NEXT"
