@@ -3,6 +3,8 @@ name: 'Cross-build and release if tag found'
 on:
   pull_request:
   push:
+    branches:
+      - main
     tags:
       - '*'
 
