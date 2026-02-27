@@ -44,15 +44,16 @@ echo
 # Set release version, commit, tag
 mvn versions:set -DnewVersion="$RELEASE" -DgenerateBackupPoms=false
 git add pom.xml
-git commit -m "Release $RELEASE"
+git commit -m "Release $RELEASE [skip ci]"
 git tag "$RELEASE"
 
 # Set next SNAPSHOT version, commit
 mvn versions:set -DnewVersion="$NEXT" -DgenerateBackupPoms=false
 git add pom.xml
-git commit -m "Prepare for next development iteration $NEXT"
+git commit -m "Prepare for next development iteration $NEXT [skip ci]"
 
-# Push
-git push origin "$BRANCH" "$RELEASE"
+# Push branch first (skipped by CI), then tag (triggers the real build+release)
+git push origin "$BRANCH"
+git push origin "$RELEASE"
 
 echo "Done! Released $RELEASE, now on $NEXT"
