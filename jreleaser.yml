@@ -49,5 +49,6 @@ packagers:
       owner: valkovich-ds
       name: homebrew-tap
       tagName: '{{projectName}}-{{tagName}}'
+      active: SNAPSHOT
     formulaName: streamx
     multiPlatform: true
