@@ -172,7 +172,7 @@ jobs:
         run: chmod +x artifacts/streamx-*
 
       - name: Release with JReleaser
-        run: ./mvnw jreleaser:full-release
+        run: ./mvnw jreleaser:full-release -Djreleaser.strict=true
         env:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
