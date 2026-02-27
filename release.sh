@@ -44,7 +44,7 @@ echo
 # Set release version, commit, tag
 mvn versions:set -DnewVersion="$RELEASE" -DgenerateBackupPoms=false
 git add pom.xml
-git commit -m "Release $RELEASE [skip ci]"
+git commit -m "Release $RELEASE"
 git tag "$RELEASE"
 
 # Set next SNAPSHOT version, commit
