@@ -1,9 +1,8 @@
 name: 'Cross-build and release if tag found'
 
 on:
-  pull_request:
-    branches:
-      - main
+  pull_request_review:
+    types: [submitted]
   push:
     tags:
       - '*'
@@ -14,6 +13,7 @@ permissions:
 
 jobs:
   reachability-metadata:
+    if: github.event_name == 'push' || github.event.review.state == 'approved'
     runs-on: ubuntu-24.04
     name: generate-reachability-metadata
     steps:
