@@ -11,6 +11,12 @@ CURRENT=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 echo "Current version: $CURRENT"
 echo "Branch: $BRANCH"
 
+# Ensure it's a SNAPSHOT
+if [[ "$CURRENT" != *-SNAPSHOT ]]; then
+  echo "Error: Current version ($CURRENT) is not a SNAPSHOT. Nothing to release."
+  exit 1
+fi
+
 # Strip -SNAPSHOT
 BASE=${CURRENT%-SNAPSHOT}
 
