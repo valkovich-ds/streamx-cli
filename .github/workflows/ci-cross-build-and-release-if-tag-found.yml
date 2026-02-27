@@ -12,6 +12,10 @@ permissions:
   id-token: write
   contents: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # Generate reachability metadata for native-image-agent.
   # We could do it in the build job, but it requires running tests.
@@ -50,6 +54,7 @@ jobs:
           name: docker-logs-reachability-metadata
           path: target/docker-logs/
           if-no-files-found: ignore
+          retention-days: 7
 
       - name: Upload reachability metadata
         uses: actions/upload-artifact@v4
@@ -103,6 +108,7 @@ jobs:
           path: src/main/resources/META-INF/native-image/
 
       - name: Setup Docker for macOS
+        # Docker is not available on macOS arm64.
         if: runner.os == 'macOS' && runner.arch == 'X64'
         uses: docker/setup-docker-action@v4
         with:
@@ -124,6 +130,7 @@ jobs:
           name: docker-logs-${{ matrix.name }}
           path: target/docker-logs/
           if-no-files-found: ignore
+          retention-days: 7
 
       - name: Prepare artifact
         run: |
@@ -148,17 +155,18 @@ jobs:
     runs-on: ubuntu-24.04
     name: release
     steps:
-      - name: Verify tag is on main
-        run: |
-          if ! git branch -r --contains ${{ github.sha }} | grep -q 'origin/main'; then
-            echo "Error: Tag is not on main branch. Cancel release process."
-            exit 1
-          fi
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Verify tag is on main
+        # TODO BEFORE MERGE: replace native-build-2 with main
+        run: |
+          if ! git branch -r --contains ${{ github.sha }} | grep -q 'origin/native-build-2'; then
+            echo "Error: Tag is not on main branch. Cancel release process."
+            exit 1
+          fi
 
       - name: Set up JDK 25
         uses: actions/setup-java@v5
@@ -189,7 +197,7 @@ jobs:
           ./mvnw jreleaser:assemble jreleaser:full-release -Djreleaser.strict=true
         env:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
       - name: Upload JReleaser output
         if: always()
