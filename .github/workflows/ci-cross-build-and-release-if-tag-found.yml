@@ -5,10 +5,6 @@ on:
     branches:
       - main
   push:
-    branches:
-      - main
-      # TODO - remove before merge
-      - native-build-2
     tags:
       - '*'
 
