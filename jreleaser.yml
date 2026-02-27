@@ -30,7 +30,7 @@ release:
 
 assemble:
   archive:
-    streamx-cli:
+    streamx:
       active: ALWAYS
       attachPlatform: true
       formats:
@@ -49,14 +49,14 @@ assemble:
           platform: linux-aarch_64
           extraProperties:
             graalVMNativeImage: true
-#        - path: artifacts/streamx-macos-x86_64
-#          platform: osx-x86_64
-#          extraProperties:
-#            graalVMNativeImage: true
-#        - path: artifacts/streamx-macos-aarch64
-#          platform: osx-aarch_64
-#          extraProperties:
-#            graalVMNativeImage: true
+        - path: artifacts/streamx-macos-x86_64
+          platform: osx-x86_64
+          extraProperties:
+            graalVMNativeImage: true
+        - path: artifacts/streamx-macos-aarch64
+          platform: osx-aarch_64
+          extraProperties:
+            graalVMNativeImage: true
 
 packagers:
   brew:
