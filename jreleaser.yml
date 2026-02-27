@@ -4,7 +4,6 @@ project:
   versionPattern: SEMVER
   license: LicenseRef-StreamX
   licenseUrl: https://github.com/streamx-com/streamx-cli/blob/main/LICENSE
-
   snapshot:
     pattern: .*-SNAPSHOT
     label: early-access
@@ -27,18 +26,6 @@ release:
       formatted: ALWAYS
       format: '- {{commitShortHash}} {{commitTitle}}'
 
-assemble:
-  archive:
-    streamx-cli:
-      active: ALWAYS
-      attachPlatform: true
-      formats:
-        - ZIP
-        - TAR_GZ
-      fileSets:
-        - input: '.'
-          includes:
-            - 'LICENSE'
       artifacts:
         - path: artifacts/streamx-linux-x86_64
           platform: linux-x86_64
@@ -52,25 +39,10 @@ assemble:
 #          platform: osx-x86_64
 #          extraProperties:
 #            graalVMNativeImage: true
-        - path: artifacts/streamx-macos-aarch64
-          platform: osx-aarch_64
-          extraProperties:
-            graalVMNativeImage: true
-
-distributions:
-  streamx-cli:
-    type: BINARY
-    executable:
-      name: streamx
-    artifacts:
-      - path: target/jreleaser/assemble/streamx-cli/archive/streamx-cli-{{projectVersion}}-linux-x86_64.zip
-        platform: linux-x86_64
-      - path: target/jreleaser/assemble/streamx-cli/archive/streamx-cli-{{projectVersion}}-linux-aarch_64.zip
-        platform: linux-aarch_64
-#      - path: target/jreleaser/assemble/streamx-cli/archive/streamx-cli-{{projectVersion}}-osx-x86_64.zip
-#        platform: osx-x86_64
-      - path: target/jreleaser/assemble/streamx-cli/archive/streamx-cli-{{projectVersion}}-osx-aarch_64.zip
-        platform: osx-aarch_64
+#        - path: artifacts/streamx-macos-aarch64
+#          platform: osx-aarch_64
+#          extraProperties:
+#            graalVMNativeImage: true
 
 packagers:
   brew:

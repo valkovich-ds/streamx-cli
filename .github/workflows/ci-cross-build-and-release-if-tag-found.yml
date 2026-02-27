@@ -68,9 +68,9 @@ jobs:
           - os: ubuntu-24.04-arm
             name: linux-arm64
             artifact: streamx-linux-aarch64
-          - os: macos-15
-            name: macos-arm64
-            artifact: streamx-macos-aarch64
+#          - os: macos-15
+#            name: macos-arm64
+#            artifact: streamx-macos-aarch64
 #          - os: macos-15-intel
 #            name: macos-amd64
 #            artifact: streamx-macos-x86_64
@@ -195,8 +195,8 @@ jobs:
             name: linux-amd64
           - os: ubuntu-24.04-arm
             name: linux-arm64
-          - os: macos-15
-            name: macos-arm64
+#          - os: macos-15
+#            name: macos-arm64
 #          - os: macos-15-intel
 #            name: macos-amd64
     runs-on: ${{ matrix.os }}
