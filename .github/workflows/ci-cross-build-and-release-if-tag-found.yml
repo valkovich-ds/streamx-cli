@@ -168,6 +168,9 @@ jobs:
       - name: List artifacts
         run: ls -la artifacts/
 
+      - name: Make artifacts executable
+        run: chmod +x artifacts/streamx-*
+
       - name: Release with JReleaser
         run: ./mvnw jreleaser:full-release
         env:

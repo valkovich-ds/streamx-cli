@@ -2,6 +2,9 @@ project:
   name: streamx-cli
   description: StreamX CLI
   versionPattern: SEMVER
+  license: LicenseRef-StreamX
+  licenseUrl: https://github.com/streamx-com/streamx-cli/blob/main/LICENSE
+
   snapshot:
     pattern: .*-SNAPSHOT
     label: early-access
@@ -31,11 +34,6 @@ assemble:
       formats:
         - ZIP
         - TAR_GZ
-      fileSets:
-        - input: artifacts
-          includes:
-            - 'streamx-*'
-          output: bin
       artifacts:
         - path: artifacts/streamx-linux-x86_64
           platform: linux-x86_64
