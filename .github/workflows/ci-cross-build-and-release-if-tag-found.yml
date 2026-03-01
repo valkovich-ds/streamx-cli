@@ -120,7 +120,7 @@ jobs:
         run: |
           SOCK="${DOCKER_HOST#unix://}"
           sudo ln -sf "$SOCK" /var/run/docker.sock
-          
+
       - name: Build native-image executable
         run: |
           ./mvnw clean
