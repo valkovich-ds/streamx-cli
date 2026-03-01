@@ -115,11 +115,15 @@ jobs:
           LIMA_START_ARGS: --cpus 4 --memory 8
         with:
           set-host: true
-      - name: Symlink Docker socket for macOS
+      - name: Configure Docker for macOS
         if: runner.os == 'macOS' && runner.arch == 'X64'
         run: |
           SOCK="${DOCKER_HOST#unix://}"
           sudo ln -sf "$SOCK" /var/run/docker.sock
+          
+          echo "/etc/hosts before fix:" && cat /etc/hosts
+          sudo sed -i '' '/^::1.*localhost/d' /etc/hosts
+          echo "/etc/hosts after fix:" && cat /etc/hosts
 
       - name: Build native-image executable
         run: |
