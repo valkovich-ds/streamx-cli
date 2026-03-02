@@ -120,6 +120,7 @@ jobs:
         run: |
           SOCK="${DOCKER_HOST#unix://}"
           sudo ln -sf "$SOCK" /var/run/docker.sock
+          docker pull apachepulsar/pulsar:4.0.5
 
       - name: Build native-image executable
         run: |
