@@ -215,12 +215,15 @@ jobs:
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@main
 
-      - name: Install streamx CLI via Homebrew
+      - name: Install streamx via Homebrew
         env:
+          TAP_TAG: streamx-${{ github.ref_name }}
           HOMEBREW_GITHUB_API_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          brew tap streamx-com/tap https://github.com/streamx-com/homebrew-tap
-          brew install streamx-com/tap/streamx@${{ github.ref_name }}
+          brew tap streamx-com/tap https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/streamx-com/homebrew-tap
+          cd "$(brew --repository streamx-com/tap)"
+          git checkout "${TAP_TAG}"
+          brew install streamx-com/tap/streamx
 
       - name: Smoke test
         run: |
