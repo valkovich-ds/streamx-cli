@@ -107,21 +107,6 @@ jobs:
           name: reachability-metadata
           path: src/main/resources/META-INF/native-image/
 
-      - name: Setup Docker for macOS
-        # Docker is not available on macOS arm64.
-        if: runner.os == 'macOS' && runner.arch == 'X64'
-        uses: docker/setup-docker-action@v4
-        env:
-          LIMA_START_ARGS: --cpus 4 --memory 8
-        with:
-          set-host: true
-      - name: Configure Docker for macOS
-        if: runner.os == 'macOS' && runner.arch == 'X64'
-        run: |
-          SOCK="${DOCKER_HOST#unix://}"
-          sudo ln -sf "$SOCK" /var/run/docker.sock
-          docker pull apachepulsar/pulsar:4.0.5
-
       - name: Build native-image executable
         run: |
           ./mvnw clean
