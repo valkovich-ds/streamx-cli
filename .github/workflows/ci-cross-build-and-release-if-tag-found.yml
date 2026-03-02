@@ -179,13 +179,25 @@ jobs:
           repositories: homebrew-tap
 
       - name: Release with JReleaser
-        run: |
-          ls -la artifacts/
-          chmod +x artifacts/streamx-*
-          ./mvnw jreleaser:assemble jreleaser:full-release -Djreleaser.strict=true
         env:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          ls -la artifacts/
+          chmod +x artifacts/streamx-*
+          
+          # Pre-create platform ZIPs manually
+          VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
+          for PLATFORM in linux-x86_64 linux-aarch64 macos-aarch64 macos-x86_64; do
+            mkdir -p staging/$PLATFORM/bin
+            cp artifacts/streamx-$PLATFORM staging/$PLATFORM/bin/streamx
+            cp LICENSE staging/$PLATFORM/
+            cd staging
+            zip -r ../artifacts/streamx-${VERSION}-${PLATFORM}.zip $PLATFORM/
+            cd ..
+          done
+          
+          ./mvnw jreleaser:full-release -Djreleaser.strict=true
 
       - name: Upload JReleaser output
         if: always()
