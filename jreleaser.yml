@@ -1,5 +1,5 @@
 project:
-  name: streamx-cli
+  name: streamx
   description: StreamX CLI
   versionPattern: SEMVER
   license: LicenseRef-StreamX
