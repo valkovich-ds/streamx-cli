@@ -154,17 +154,6 @@
       <version>${streamx.version}</version>
     </dependency>
 
-    <!-- TODO - is it needed here? -->
-    <dependency>
-      <groupId>io.fabric8</groupId>
-      <artifactId>kubernetes-client-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>io.fabric8</groupId>
-      <artifactId>kubernetes-model-apiextensions</artifactId>
-    </dependency>
-
     <!-- Native image dependencies -->
     <dependency>
       <groupId>org.graalvm.sdk</groupId>
