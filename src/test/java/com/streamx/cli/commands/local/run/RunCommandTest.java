@@ -1,28 +1,19 @@
 package com.streamx.cli.commands.local.run;
 
-import static com.streamx.cli.commands.util.MeshTestsUtils.cleanUpMesh;
+import static com.streamx.cli.test.MeshTestsUtils.cleanUpMesh;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.streamx.cli.commands.util.MeshStopper;
-import com.streamx.runner.event.MeshStarted;
-import io.quarkus.arc.properties.IfBuildProperty;
-import io.quarkus.test.junit.QuarkusTestProfile;
-import io.quarkus.test.junit.TestProfile;
+import com.streamx.cli.test.CliBaseIT;
 import io.quarkus.test.junit.main.LaunchResult;
 import io.quarkus.test.junit.main.QuarkusMainLauncher;
 import io.quarkus.test.junit.main.QuarkusMainTest;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Observes;
-import jakarta.inject.Inject;
 import java.nio.file.Paths;
-import java.util.Map;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 @QuarkusMainTest
-@TestProfile(RunCommandTest.RunCommandProfile.class)
-public class RunCommandTest {
+public class RunCommandTest extends CliBaseIT {
 
   @AfterEach
   void awaitDockerResourcesAreRemoved() {
@@ -42,32 +33,12 @@ public class RunCommandTest {
 
   @Test
   void shouldRunStreamxExampleMesh(QuarkusMainLauncher launcher) {
-    String s = Paths.get("target/test-classes/mesh.yaml")
+    String meshPath = Paths.get("target/test-classes/mesh.yaml")
         .toAbsolutePath()
         .normalize()
         .toString();
-    LaunchResult result = launcher.launch("local", "run", "-f=" + s);
+    LaunchResult result = launcher.launch("local", "run", "-f=" + meshPath);
 
     assertThat(result.getOutput()).contains("STREAMX IS READY!");
-  }
-
-  @ApplicationScoped
-  @IfBuildProperty(name = "streamx.run.test.profile", stringValue = "true")
-  public static class Listener {
-
-    @Inject
-    MeshStopper meshStopper;
-
-    void onMeshStarted(@Observes MeshStarted event) {
-      meshStopper.scheduleStop();
-    }
-  }
-
-  public static class RunCommandProfile implements QuarkusTestProfile {
-
-    @Override
-    public Map<String, String> getConfigOverrides() {
-      return Map.of("streamx.run.test.profile", "true");
-    }
   }
 }

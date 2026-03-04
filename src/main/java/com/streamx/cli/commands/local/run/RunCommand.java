@@ -5,7 +5,7 @@ import static com.streamx.cli.i18n.MessageProvider.msg;
 import com.streamx.cli.framework.AbstractSilentCommand;
 import com.streamx.cli.framework.CliException;
 import com.streamx.cli.framework.CommandResult;
-import com.streamx.cli.meshprocessing.MeshManager;
+import com.streamx.cli.mesh.MeshManager;
 import com.streamx.cli.util.BannerPrinter;
 import com.streamx.runner.StreamxRunner;
 import com.streamx.runner.exception.ContainerStartupTimeoutException;
@@ -16,11 +16,11 @@ import picocli.CommandLine.Command;
 
 @Command(name = "run",
     mixinStandardHelpOptions = true,
-    description = "Run a StreamX Mesh locally.")
+    header = "Run a StreamX Mesh locally")
 public class RunCommand extends AbstractSilentCommand {
   @CommandLine.Option(
       names = {"-f", "--file"},
-      description = "Path to mesh definition file.",
+      description = "Path to mesh definition file",
       defaultValue = "mesh.yaml"
   )
   public Path meshPath;
