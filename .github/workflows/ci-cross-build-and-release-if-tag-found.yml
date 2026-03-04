@@ -244,7 +244,7 @@ jobs:
           brew tap streamx-com/tap https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/streamx-com/homebrew-tap
           cd "$(brew --repository streamx-com/tap)"
           git checkout "${TAP_TAG}"
-          HOMEBREW_GITHUB_API_TOKEN=${{ secrets.GITHUB_TOKEN }} brew install streamx-com/tap/streamx
+          brew install streamx-com/tap/streamx
 
       - name: Smoke test
         run: |
