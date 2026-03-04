@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-REPO="streamx.com/streamx-cli"
+REPO="streamx-com/streamx-cli"
 BINARY_NAME="streamx"
 INSTALL_DIR="/usr/local/bin"
 
