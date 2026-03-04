@@ -243,17 +243,21 @@ jobs:
           HOMEBREW_GITHUB_API_TOKEN: ${{ steps.app-token.outputs.token }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Clone private tap using app token
           brew tap streamx-com/tap https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/streamx-com/homebrew-tap
           cd "$(brew --repository streamx-com/tap)"
           git checkout "${TAP_TAG}"
           
+          # Pre-download the release zip using GITHUB_TOKEN (has streamx-cli access)
           gh release download "${{ github.ref_name }}" \
             --repo streamx-com/streamx-cli \
             --pattern "*.zip" \
             --dir /tmp/streamx-assets
           
+          # Inject into Homebrew's cache so it skips the download
           DOWNLOAD_URL=$(brew info --json=v2 streamx-com/tap/streamx | jq -r '.formulae[0].urls.stable.url')
           CACHE_ENTRY=$(brew --cache --formula streamx-com/tap/streamx)
+          mkdir -p "$(dirname "$CACHE_ENTRY")"
           ASSET_FILE=$(basename "$DOWNLOAD_URL")
           cp "/tmp/streamx-assets/$ASSET_FILE" "$CACHE_ENTRY"
           
