@@ -23,6 +23,8 @@ jobs:
   # macOS runners lack Docker support needed for our tests.
   # Intel mac has it via QEMU, but it's too slow - streamx-runner fails to start by timeouts.
   # Since these configs are cross-platform, we generate them on Linux and share across matrix builds.
+  #
+  # More detailed explanation: https://github.com/streamx-com/streamx-cli/pull/13#discussion_r2882693570
   reachability-metadata:
     runs-on: ubuntu-24.04
     name: generate-reachability-metadata
