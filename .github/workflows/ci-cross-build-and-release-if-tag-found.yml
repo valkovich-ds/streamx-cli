@@ -50,7 +50,7 @@ jobs:
 
       - name: Run tests with native-image-agent
         run: |
-          .github/scripts/with-capture-docker-logs.sh ./mvnw clean verify
+          .github/scripts/with-capture-docker-logs.sh ./mvnw verify
       - name: Upload Docker logs
         if: always()
         uses: actions/upload-artifact@v4
