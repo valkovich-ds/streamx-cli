@@ -31,6 +31,14 @@ import org.junit.jupiter.api.io.TempDir;
 public class StreamCommandIT extends CliBaseIT {
   CloudEventGenerator cloudEventGenerator = new CloudEventGenerator();
 
+    @Test
+    void shouldPrintHelpInformation() throws Exception {
+      ProcessResult result = exec("publish", "stream", "--help");
+
+      assertThat(result.stdout()).contains("Publishes stream of events");
+      assertThat(result.stderr()).isEmpty();
+    }
+
   @Test
   void shouldStreamEventsFromFilePath(@TempDir Path tempDir) throws Exception {
     List<CloudEvent> events = cloudEventGenerator.generate(5);
