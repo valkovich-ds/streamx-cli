@@ -14,7 +14,7 @@ public class PublishCommandIT extends CliBaseIT {
   void shouldPrintHelpInformation() throws Exception {
     ProcessResult result = exec("publish", "stream", "--help");
 
-    assertThat(result.stdout()).contains("Publishes stream of events");
+    assertThat(result.stdout()).contains("Publish events");
     assertThat(result.stderr()).isEmpty();
   }
 }
