@@ -121,8 +121,18 @@ public abstract class CliBaseIT {
     });
 
     cmd.setExecutionStrategy(parseResult -> {
+      CommandLine.ParseResult pr = parseResult;
+      while (pr != null) {
+        if (pr.isUsageHelpRequested() || pr.isVersionHelpRequested()) {
+          return new CommandLine.RunLast().execute(parseResult);
+        }
+
+        pr = pr.hasSubcommand() ? pr.subcommand() : null;
+      }
+
+      Assertions.assertNotNull(parseResult);
       List<CommandLine> parsed = parseResult.asCommandLineList();
-      CommandLine last = parsed.get(parsed.size() - 1);
+      CommandLine last = parsed.getLast();
       Object command = last.getCommand();
       if (command instanceof AbstractCommand<?> abstractCommand) {
         return abstractCommand.execute();

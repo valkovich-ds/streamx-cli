@@ -173,8 +173,6 @@ public class StreamCommandIT extends CliBaseIT {
     );
   }
 
-
-
   @Test
   void shouldFormatOutputAsValidJsonIfErrorOccurredOrVerboseFlagIsSet() throws Exception {
     List<CloudEvent> validEvents = cloudEventGenerator.generate(3);
