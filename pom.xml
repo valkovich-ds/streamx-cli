@@ -26,8 +26,12 @@
     <compiler-plugin.version>3.13.0</compiler-plugin.version>
     <checkstyle-plugin.version>3.6.0</checkstyle-plugin.version>
     <graalvm.version>25.0.2</graalvm.version>
-    <streamx.version>2.0.25-SNAPSHOT</streamx.version>
+    <streamx.version>2.0.24</streamx.version>
     <cloudevents.version>4.0.1</cloudevents.version>
+
+    <native.agent.argLine>
+      -agentlib:native-image-agent=config-output-dir=${project.basedir}/src/main/resources/META-INF/native-image,caller-filter-file=${project.basedir}/src/main/resources/META-INF/native-image/agent-filter.json
+    </native.agent.argLine>
   </properties>
 
   <dependencyManagement>
@@ -62,7 +66,7 @@
     <dependency>
       <groupId>info.picocli</groupId>
       <artifactId>picocli-shell-jline3</artifactId>
-      <version>4.7.5</version>
+      <version>4.7.7</version>
     </dependency>
 
     <dependency>
@@ -362,6 +366,19 @@
         </executions>
       </plugin>
       <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>src/main/resources/META-INF/native-image</directory>
+              <includes>
+                <include>reachability-metadata.json</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${compiler-plugin.version}</version>
         <configuration>
@@ -382,12 +399,9 @@
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
           </systemPropertyVariables>
           <argLine>
-            <!-- Fixes:
-              java.lang.IllegalAccessError: module java.base does not open java.lang to unnamed module @xxx;
-              to use the thread-local-reset capability on Java 24 or later.
-            -->
             --add-opens java.base/java.lang=ALL-UNNAMED
-            -agentlib:native-image-agent=config-output-dir=${project.basedir}/src/main/resources/META-INF/native-image
+            --enable-native-access=ALL-UNNAMED
+            ${native.agent.argLine}
           </argLine>
         </configuration>
       </plugin>
@@ -406,6 +420,10 @@
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
           </systemPropertyVariables>
+          <argLine>
+            --add-opens java.base/java.lang=ALL-UNNAMED
+            ${native.agent.argLine}
+          </argLine>
         </configuration>
       </plugin>
       <plugin>
@@ -417,6 +435,16 @@
           <metadataRepository>
             <enabled>true</enabled>
           </metadataRepository>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Add-Opens>java.base/java.lang</Add-Opens>
+            </manifestEntries>
+          </archive>
         </configuration>
       </plugin>
     </plugins>
@@ -441,9 +469,20 @@
         <quarkus.package.type>native</quarkus.package.type>
         <quarkus.native.enable-metadata-repository>true</quarkus.native.enable-metadata-repository>
         <quarkus.native.enable-all-security-services>true</quarkus.native.enable-all-security-services>
+
+        <!-- Override native agent argLine as we need to run GraalVM tracing agent only JVM, before running the native profile -->
+        <native.agent.argLine> </native.agent.argLine>
       </properties>
       <build>
         <plugins>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <systemPropertyVariables>
+                <native.image>true</native.image>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>

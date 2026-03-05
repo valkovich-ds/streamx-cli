@@ -10,14 +10,13 @@ import io.quarkus.test.junit.main.QuarkusMainLauncher;
 import io.quarkus.test.junit.main.QuarkusMainTest;
 import java.nio.file.Paths;
 import java.time.Duration;
-
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 @QuarkusMainTest
 @DisabledIfDockerUnavailable
-public class RunCommandTest extends CliBaseIT {
+public class RunCommandIT extends CliBaseIT {
 
   @AfterEach
   void awaitDockerResourcesAreRemoved() {

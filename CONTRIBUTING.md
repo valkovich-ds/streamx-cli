@@ -20,7 +20,7 @@ Otherwise, CI will fail because at this moment Docker isn't supported on macOS a
 
 ## Running tests
 
-`./mvnw test`
+`./mvnw verify -Dnative`
 
 ## Release process
 
