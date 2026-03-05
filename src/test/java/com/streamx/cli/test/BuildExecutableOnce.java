@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Stream;
 
 // Resolve jar or native image path before running integration tests
 final class BuildExecutableOnce {
@@ -54,7 +55,7 @@ final class BuildExecutableOnce {
   }
 
   private static Path findNativeExecutable() {
-    try (var files = Files.list(TARGET)) {
+    try (Stream<Path> files = Files.list(TARGET)) {
       return files
           .filter(p -> p.getFileName().toString().endsWith("-runner"))
           .filter(Files::isExecutable)

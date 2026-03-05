@@ -16,6 +16,7 @@ import com.sun.net.httpserver.HttpServer;
 import io.cloudevents.CloudEvent;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -87,7 +88,7 @@ public class StreamCommandIT extends CliBaseIT {
     server.createContext("/events", exchange -> {
       byte[] responseBytes = eventsJsonString.getBytes();
       exchange.sendResponseHeaders(200, responseBytes.length);
-      try (var outputStream = exchange.getResponseBody()) {
+      try (OutputStream outputStream = exchange.getResponseBody()) {
         outputStream.write(responseBytes);
       }
     });

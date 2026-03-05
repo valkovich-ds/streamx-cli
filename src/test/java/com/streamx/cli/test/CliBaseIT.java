@@ -4,6 +4,7 @@ import com.streamx.cli.commands.StreamxCommand;
 import com.streamx.cli.framework.AbstractCommand;
 import io.quarkus.arc.Arc;
 import io.quarkus.arc.ArcContainer;
+import io.quarkus.arc.InjectableInstance;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -79,8 +80,8 @@ public abstract class CliBaseIT {
 
   /** In-process execution for JVM mode. */
   private ProcessResult execInProcess(InputStream stdin, String... args) {
-    var out = new ByteArrayOutputStream();
-    var err = new ByteArrayOutputStream();
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    ByteArrayOutputStream err = new ByteArrayOutputStream();
 
     InputStream originalIn = System.in;
     PrintStream originalOut = System.out;
@@ -107,11 +108,11 @@ public abstract class CliBaseIT {
 
   /** Creates a CommandLine instance for in-process execution. */
   protected CommandLine createCommandLine() {
-    var container = Arc.container();
-    var cmd = new CommandLine(new StreamxCommand(), new CommandLine.IFactory() {
+    ArcContainer container = Arc.container();
+    CommandLine cmd = new CommandLine(new StreamxCommand(), new CommandLine.IFactory() {
       @Override
       public <K> K create(Class<K> cls) throws Exception {
-        var instance = container.select(cls);
+        InjectableInstance<K> instance = container.select(cls);
         if (instance.isResolvable()) {
           return instance.get();
         }
@@ -138,7 +139,7 @@ public abstract class CliBaseIT {
       long timeoutSeconds,
       String... args
   ) throws Exception {
-    var command = new ArrayList<>(BuildExecutableOnce.getExecutablePath());
+    ArrayList<String> command = new ArrayList<>(BuildExecutableOnce.getExecutablePath());
     command.addAll(List.of(args));
 
     ProcessBuilder pb = new ProcessBuilder(command);
@@ -176,7 +177,7 @@ public abstract class CliBaseIT {
   }
 
   private StreamCapture captureAndForward(InputStream source, PrintStream target) {
-    var buffer = new ByteArrayOutputStream();
+    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     Thread thread = Thread.ofVirtual().start(() -> {
       try {
         byte[] buf = new byte[1024];
