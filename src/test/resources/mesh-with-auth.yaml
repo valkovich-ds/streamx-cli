@@ -30,8 +30,7 @@ ingestion:
   rest-ingestion:
     containers:
       proxy:
-        environment:
-          QUARKUS_HTTP_AUTH_PERMISSION_BEARER_POLICY: permit
+        environment: {}
 
 processing:
   pages-relay:
