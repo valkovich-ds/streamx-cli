@@ -85,8 +85,6 @@ public class SourceStream {
           }
         }
       };
-    } catch (CliException e) {
-      throw e;
     } catch (Exception e) {
       httpClient.close();
       throw new CliException(e.getMessage() == null ? msg.connectionRefused() : e.getMessage(), e);
