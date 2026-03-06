@@ -51,10 +51,14 @@ packagers:
       owner: streamx-com
       name: homebrew-tap
       tagName: '{{projectName}}-{{tagName}}'
-      branch: main
+      branch: test-main
+      branchPush: test-main
       snapshot:
-        branch: preview
+        branch: test-preview
+        branchPush: test-preview
         tagName: '{{projectName}}-{{tagName}}'
     formulaName: streamx
     multiPlatform: true
     downloadStrategy: GitHubPrivateRepositoryReleaseDownloadStrategy
+    extraProperties:
+      requireRelative: '../download_strategy'
