@@ -256,8 +256,7 @@ public class StreamCommandIT extends CliBaseIT {
         "3",
         "--output",
         "json",
-        "--continue-on-error",
-        "--verbose"
+        "--continue-on-error"
     );
 
     assertEquals(expectedJson1, result1.stdout().strip());
@@ -303,8 +302,7 @@ public class StreamCommandIT extends CliBaseIT {
         "--batch-size",
         "3",
         "--output",
-        "json",
-        "--verbose"
+        "json"
     );
 
     assertEquals(expectedJson2, result2.stdout().strip());
