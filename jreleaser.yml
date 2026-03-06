@@ -49,7 +49,6 @@ packagers:
     repository:
       owner: streamx-com
       name: homebrew-tap
-      tagName: '{{projectName}}-{{tagName}}'
       branch: main
       branchPush: main
     formulaName: streamx@{{projectVersion}}
