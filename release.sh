@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# release.sh - Usage: ./release.sh [patch|minor|major]
+# release.sh - Usage: ./release.sh [patch|minor|major|preview]
 
 set -euo pipefail
 
@@ -20,6 +20,38 @@ fi
 # Strip -SNAPSHOT
 BASE=${CURRENT%-SNAPSHOT}
 
+if [[ "$TYPE" == "preview" ]]; then
+  # Find the next rc number by checking existing tags
+  LAST_RC=$(git tag -l "${BASE}-rc.*" | sed "s/${BASE}-rc\.//" | sort -n | tail -1)
+  NEXT_RC=$(( ${LAST_RC:-0} + 1 ))
+  PREVIEW="${BASE}-rc.${NEXT_RC}"
+
+  echo ""
+  echo "Preview version: $PREVIEW"
+  echo ""
+  read -p "Are you sure you want to publish preview $PREVIEW? [y/N] " -n 1 -r
+  echo
+  [[ $REPLY =~ ^[Yy]$ ]] || { echo "Aborted."; exit 0; }
+
+  # Set rc version, commit, tag
+  mvn versions:set -DnewVersion="$PREVIEW" -DgenerateBackupPoms=false
+  git add pom.xml
+  git commit -m "Preview $PREVIEW"
+  git tag "$PREVIEW"
+
+  # Restore SNAPSHOT version, commit
+  mvn versions:set -DnewVersion="$CURRENT" -DgenerateBackupPoms=false
+  git add pom.xml
+  git commit -m "Prepare for next development iteration $CURRENT [skip ci]"
+
+  # Push branch first, then tag
+  git push origin "$BRANCH"
+  git push origin "$PREVIEW"
+
+  echo "Done! Preview $PREVIEW started. Follow the CI job progress."
+  exit 0
+fi
+
 IFS='.' read -r MAJOR MINOR PATCH <<< "$BASE"
 
 # Calculate release version
@@ -30,7 +62,7 @@ case "$TYPE" in
   patch) NEXT="${MAJOR}.${MINOR}.$((PATCH + 1))-SNAPSHOT" ;;
   minor) NEXT="${MAJOR}.$((MINOR + 1)).0-SNAPSHOT" ;;
   major) NEXT="$((MAJOR + 1)).0.0-SNAPSHOT" ;;
-  *) echo "Usage: $0 [patch|minor|major]"; exit 1 ;;
+  *) echo "Usage: $0 [patch|minor|major|preview]"; exit 1 ;;
 esac
 
 echo ""

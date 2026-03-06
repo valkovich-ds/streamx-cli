@@ -5,7 +5,7 @@ project:
   license: LicenseRef-StreamX
   licenseUrl: https://github.com/streamx-com/streamx-cli/blob/main/LICENSE
   snapshot:
-    pattern: .*-SNAPSHOT
+    pattern: .*-rc\..*
     label: early-access
     fullChangelog: true
   links:
@@ -51,8 +51,10 @@ packagers:
       owner: streamx-com
       name: homebrew-tap
       tagName: '{{projectName}}-{{tagName}}'
+      branch: main
+      snapshot:
+        branch: preview
+        tagName: '{{projectName}}-{{tagName}}'
     formulaName: streamx
     multiPlatform: true
-
-    # We can remove it after we'll make streamx-cli and homebrew-tap repositories public
     downloadStrategy: GitHubPrivateRepositoryReleaseDownloadStrategy
