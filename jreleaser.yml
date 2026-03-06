@@ -53,3 +53,6 @@ packagers:
       tagName: '{{projectName}}-{{tagName}}'
     formulaName: streamx
     multiPlatform: true
+
+    # We can remove it after we'll make streamx-cli and homebrew-tap repositories public
+    downloadStrategy: GitHubPrivateRepositoryReleaseDownloadStrategy
