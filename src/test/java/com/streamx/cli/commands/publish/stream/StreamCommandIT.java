@@ -256,8 +256,13 @@ public class StreamCommandIT extends CliBaseIT {
         "3",
         "--output",
         "json",
-        "--continue-on-error"
+        "--continue-on-error",
+        "--verbose"
     );
+
+    System.out.println("!!! EXIT CODE: " + result1.exitCode());
+    System.out.println("!!! STDERR: " + result1.stderr());
+    System.out.println("!! STDOUT: [" + result1.stdout() + "]");
 
     assertEquals(expectedJson1, result1.stdout().strip());
 
@@ -302,7 +307,8 @@ public class StreamCommandIT extends CliBaseIT {
         "--batch-size",
         "3",
         "--output",
-        "json"
+        "json",
+        "--verbose"
     );
 
     assertEquals(expectedJson2, result2.stdout().strip());
