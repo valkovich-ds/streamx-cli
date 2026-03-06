@@ -13,6 +13,7 @@ run-name: >-
     || format('Build {0} - {1}', github.head_ref || github.ref_name, github.sha)
   }}
 
+# Runs on pull requests, pushes to main, and tag pushes (which trigger releases).
 on:
   pull_request:
   push:
