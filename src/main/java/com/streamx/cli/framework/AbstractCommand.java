@@ -114,15 +114,9 @@ public abstract class AbstractCommand<ResultT> implements Runnable {
 
   public int execute() {
     int exitCode = 0;
-    CommandResult<ResultT> result = null;
 
     try {
-      result = this.runCommand();
-    } catch (Exception e) {
-      exitCode = handleExecutionError(e);
-    }
-
-    if (result != null) {
+      CommandResult<ResultT> result = this.runCommand();
       String textOutput = result.toText(output, this::getTextOutput);
       if (!textOutput.isEmpty()) {
         System.out.println(textOutput);
@@ -135,10 +129,13 @@ public abstract class AbstractCommand<ResultT> implements Runnable {
       if (result.getExitCodeOverride().isPresent()) {
         exitCode = result.getExitCodeOverride().get();
       }
+    } catch (Exception e) {
+      exitCode = handleExecutionError(e);
     }
 
     System.out.flush();
     System.err.flush();
+
     return exitCode;
   }
 

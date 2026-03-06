@@ -52,6 +52,7 @@ jobs:
       - name: Run tests with native-image-agent
         run: |
           .github/scripts/with-capture-docker-logs.sh ./mvnw verify
+
       - name: Upload Docker logs
         if: always()
         uses: actions/upload-artifact@v4
@@ -60,6 +61,10 @@ jobs:
           path: target/docker-logs/
           if-no-files-found: ignore
           retention-days: 7
+
+      - name: Upload test reports
+        if: always()
+        uses: scacap/action-surefire-report@v1
 
       - name: Upload reachability metadata
         uses: actions/upload-artifact@v4
@@ -116,6 +121,11 @@ jobs:
         run: |
           ./mvnw clean
           .github/scripts/with-capture-docker-logs.sh ./mvnw verify -Dnative
+
+      - name: Upload test reports
+        if: always()
+        uses: scacap/action-surefire-report@v1
+
       - name: Upload Docker logs
         if: always()
         uses: actions/upload-artifact@v4
