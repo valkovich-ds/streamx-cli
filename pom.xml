@@ -29,6 +29,8 @@
     <streamx.version>2.0.26</streamx.version>
     <cloudevents.version>4.0.1</cloudevents.version>
 
+    <test.output.toFile>false</test.output.toFile>
+
     <native.agent.argLine>
       -agentlib:native-image-agent=config-output-dir=${project.basedir}/src/main/resources/META-INF/native-image
     </native.agent.argLine>
@@ -337,34 +339,34 @@
           <configFile>jreleaser.yml</configFile>
         </configuration>
       </plugin>
-<!--      <plugin>-->
-<!--        <groupId>org.apache.maven.plugins</groupId>-->
-<!--        <artifactId>maven-checkstyle-plugin</artifactId>-->
-<!--        <version>${checkstyle-plugin.version}</version>-->
-<!--        <configuration>-->
-<!--          <configLocation>google_checks.xml</configLocation>-->
-<!--          <failsOnError>true</failsOnError>-->
-<!--          <consoleOutput>true</consoleOutput>-->
-<!--          <includeTestSourceDirectory>true</includeTestSourceDirectory>-->
-<!--          <failOnViolation>true</failOnViolation>-->
-<!--          <violationSeverity>warning</violationSeverity>-->
-<!--          <logViolationsToConsole>true</logViolationsToConsole>-->
-<!--          <suppressionsLocation>codestyle/checkstyle-suppressions.xml</suppressionsLocation>-->
-<!--          <sourceDirectories>-->
-<!--            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>-->
-<!--            <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>-->
-<!--          </sourceDirectories>-->
-<!--        </configuration>-->
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <id>checkstyle</id>-->
-<!--            <goals>-->
-<!--              <goal>check</goal>-->
-<!--            </goals>-->
-<!--            <phase>validate</phase>-->
-<!--          </execution>-->
-<!--        </executions>-->
-<!--      </plugin>-->
+      <!--      <plugin>-->
+      <!--        <groupId>org.apache.maven.plugins</groupId>-->
+      <!--        <artifactId>maven-checkstyle-plugin</artifactId>-->
+      <!--        <version>${checkstyle-plugin.version}</version>-->
+      <!--        <configuration>-->
+      <!--          <configLocation>google_checks.xml</configLocation>-->
+      <!--          <failsOnError>true</failsOnError>-->
+      <!--          <consoleOutput>true</consoleOutput>-->
+      <!--          <includeTestSourceDirectory>true</includeTestSourceDirectory>-->
+      <!--          <failOnViolation>true</failOnViolation>-->
+      <!--          <violationSeverity>warning</violationSeverity>-->
+      <!--          <logViolationsToConsole>true</logViolationsToConsole>-->
+      <!--          <suppressionsLocation>codestyle/checkstyle-suppressions.xml</suppressionsLocation>-->
+      <!--          <sourceDirectories>-->
+      <!--            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>-->
+      <!--            <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>-->
+      <!--          </sourceDirectories>-->
+      <!--        </configuration>-->
+      <!--        <executions>-->
+      <!--          <execution>-->
+      <!--            <id>checkstyle</id>-->
+      <!--            <goals>-->
+      <!--              <goal>check</goal>-->
+      <!--            </goals>-->
+      <!--            <phase>validate</phase>-->
+      <!--          </execution>-->
+      <!--        </executions>-->
+      <!--      </plugin>-->
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
@@ -395,6 +397,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${surefire-plugin.version}</version>
         <configuration>
+          <redirectTestOutputToFile>${test.output.toFile}</redirectTestOutputToFile>
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
           </systemPropertyVariables>
@@ -417,6 +420,7 @@
           </execution>
         </executions>
         <configuration>
+          <redirectTestOutputToFile>${test.output.toFile}</redirectTestOutputToFile>
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
           </systemPropertyVariables>
@@ -458,6 +462,12 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>ci</id>
+      <properties>
+        <test.output.toFile>true</test.output.toFile>
+      </properties>
+    </profile>
     <profile>
       <id>native</id>
       <activation>

@@ -52,7 +52,7 @@ jobs:
 
       - name: Run tests with native-image-agent
         run: |
-          .github/scripts/with-capture-docker-logs.sh ./mvnw verify -Dnative
+          .github/scripts/with-capture-docker-logs.sh ./mvnw verify -Dci,native
 
       - name: Upload Docker logs
         if: always()
@@ -123,7 +123,7 @@ jobs:
       - name: Build native-image executable
         run: |
           ./mvnw clean
-          .github/scripts/with-capture-docker-logs.sh ./mvnw verify -Dnative
+          .github/scripts/with-capture-docker-logs.sh ./mvnw verify -Dci,native
 
       - name: Upload test reports
         if: always()

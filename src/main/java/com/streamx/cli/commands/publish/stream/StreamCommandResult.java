@@ -1,7 +1,10 @@
 package com.streamx.cli.commands.publish.stream;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
 import java.util.List;
 
+@RegisterForReflection
 public record StreamCommandResult(
     int successCount,
     int failureCount,
@@ -13,6 +16,7 @@ public record StreamCommandResult(
     List<BatchError> batchErrors
 ) {
 
+  @RegisterForReflection
   public record EventError(
       Integer eventNumber,
       Integer batchNumber,
@@ -22,6 +26,7 @@ public record StreamCommandResult(
   ) {
   }
 
+  @RegisterForReflection
   public record BatchError(
       int batchNumber,
       int eventCount,
