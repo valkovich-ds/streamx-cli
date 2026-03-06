@@ -52,7 +52,7 @@ jobs:
 
       - name: Run tests with native-image-agent
         run: |
-          .github/scripts/with-capture-docker-logs.sh ./mvnw verify
+          .github/scripts/with-capture-docker-logs.sh ./mvnw verify -Dnative
 
       - name: Upload Docker logs
         if: always()
@@ -86,12 +86,12 @@ jobs:
           - os: ubuntu-24.04-arm
             name: linux-arm64
             artifact: streamx-linux-aarch64
-          - os: macos-26
-            name: macos-arm64
-            artifact: streamx-macos-aarch64
-          - os: macos-26-intel
-            name: macos-amd64
-            artifact: streamx-macos-x86_64
+#          - os: macos-26
+#            name: macos-arm64
+#            artifact: streamx-macos-aarch64
+#          - os: macos-26-intel
+#            name: macos-amd64
+#            artifact: streamx-macos-x86_64
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.name }}-build
     steps:
