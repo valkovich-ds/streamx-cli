@@ -141,6 +141,7 @@ jobs:
 
       - name: Prepare artifact
         run: |
+          ls -la target/
           mkdir -p staging
           cp target/*-runner staging/${{ matrix.artifact }}
           chmod +x staging/${{ matrix.artifact }}
