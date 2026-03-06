@@ -47,8 +47,8 @@ packagers:
       owner: streamx-com
       name: homebrew-tap
       tagName: '{{projectName}}-{{tagName}}'
-      branch: test-main
-      branchPush: test-main
+      branch: test-preview
+      branchPush: test-preview
     formulaName: streamx
     multiPlatform: true
     downloadStrategy: GitHubPrivateRepositoryReleaseDownloadStrategy
