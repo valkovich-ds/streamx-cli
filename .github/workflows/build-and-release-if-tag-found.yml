@@ -236,12 +236,7 @@ jobs:
             cd ..
           done
           
-          JRELEASER_CONFIG=""
-          if [[ "${{ github.ref_name }}" == *-rc.* ]]; then
-            JRELEASER_CONFIG="-Djreleaser.config.file=jreleaser-preview.yml"
-          fi
-          
-          ./mvnw jreleaser:full-release -Djreleaser.strict=true ${JRELEASER_CONFIG}
+          ./mvnw jreleaser:full-release -Djreleaser.strict=true
 
       - name: Upload JReleaser output
         if: always()
@@ -276,16 +271,6 @@ jobs:
 
       - name: Install streamx via Homebrew
         run: |
-          TAG="${{ github.ref_name }}"
-          if [[ "$TAG" == *-rc.* ]]; then
-            TAP_BRANCH="preview"
-          else
-            TAP_BRANCH="main"
-          fi
-          
-          brew tap streamx-com/tap
-          cd "$(brew --repository streamx-com/tap)"
-          git checkout "$TAP_BRANCH"
           brew install streamx-com/tap/streamx@${TAG}
 
       - name: Smoke test
