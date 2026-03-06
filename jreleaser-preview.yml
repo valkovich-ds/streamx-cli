@@ -36,7 +36,7 @@ release:
     tagName: '{{projectVersion}}'
     prerelease:
       enabled: true
-      pattern: .*(?:RC|alpha|beta|dev|pre|snapshot|milestone)\d*.*
+      pattern: .*(?:rc|alpha|beta|dev|pre|snapshot|milestone)\d*.*
     milestone:
       close: false
     changelog:
