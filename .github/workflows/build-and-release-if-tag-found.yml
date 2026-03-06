@@ -21,6 +21,8 @@ on:
     tags:
       - '*'
 
+# Only one run at a time per branch — newer pushes cancel older in-progress runs.
+# Tag-triggered runs (releases) are not cancelled.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
