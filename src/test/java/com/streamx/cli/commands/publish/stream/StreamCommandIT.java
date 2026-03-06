@@ -261,8 +261,11 @@ public class StreamCommandIT extends CliBaseIT {
     );
 
     System.out.println("!!! EXIT CODE: " + result1.exitCode());
-    System.out.println("!!! STDERR: " + result1.stderr());
-    System.out.println("!! STDOUT: [" + result1.stdout() + "]");
+    System.out.println("!!! STDOUT LENGTH: " + result1.stdout().length());
+    System.out.println("!!! STDERR LENGTH: " + result1.stderr().length());
+    System.out.println("!!! STDERR START !!!");
+    System.out.println(result1.stderr());
+    System.out.println("!!! STDERR END !!!");
 
     assertEquals(expectedJson1, result1.stdout().strip());
 
