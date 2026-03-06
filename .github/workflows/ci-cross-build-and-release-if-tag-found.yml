@@ -52,7 +52,7 @@ jobs:
 
       - name: Run tests with native-image-agent
         run: |
-          .github/scripts/with-capture-docker-logs.sh ./mvnw verify -Dci
+          .github/scripts/with-capture-docker-logs.sh ./mvnw verify -Pci
 
       - name: Upload Docker logs
         if: always()
@@ -67,7 +67,7 @@ jobs:
         if: always()
         uses: scacap/action-surefire-report@v1
         with:
-          check_name: Test Report - generate-reachability-metadata
+          check_name: Test report - generate-reachability-metadata
 
       - name: Upload reachability metadata
         uses: actions/upload-artifact@v4
@@ -122,13 +122,13 @@ jobs:
 
       - name: Build native-image executable
         run: |
-          .github/scripts/with-capture-docker-logs.sh ./mvnw verify -Dci,native
+          .github/scripts/with-capture-docker-logs.sh ./mvnw verify -Pci,native
 
       - name: Upload test reports
         if: always()
         uses: scacap/action-surefire-report@v1
         with:
-          check_name: Test Report - ${{ matrix.name }}
+          check_name: Test report - build ${{ matrix.name }}
 
       - name: Upload Docker logs
         if: always()
