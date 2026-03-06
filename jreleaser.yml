@@ -3,7 +3,7 @@ project:
   description: StreamX CLI
   versionPattern: SEMVER
   license: LicenseRef-StreamX
-  licenseUrl: https://github.com/streamx-com/streamx-cli/blob/main/LICENSE
+  licenseUrl: https://github.com/streamx-com/streamx-cli/blob/main/LICENSE.txt
   links:
     homepage: https://github.com/streamx-com/streamx-cli
   authors:
@@ -47,10 +47,7 @@ packagers:
       owner: streamx-com
       name: homebrew-tap
       tagName: '{{projectName}}-{{tagName}}'
-      branch: test-main
-      branchPush: test-main
-    formulaName: streamx
+      branch: main
+      branchPush: main
+    formulaName: streamx@{{projectVersion}}
     multiPlatform: true
-    downloadStrategy: GitHubPrivateRepositoryReleaseDownloadStrategy
-    extraProperties:
-      requireRelative: '../download_strategy'

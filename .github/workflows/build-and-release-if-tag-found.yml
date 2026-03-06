@@ -274,46 +274,19 @@ jobs:
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@main
 
-      - name: Generate GitHub App token
-        id: app-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ secrets.GH_STREAMX_RELEASE_APP_ID }}
-          private-key: ${{ secrets.GH_STREAMX_RELEASE_APP_PRIVATE_KEY }}
-          owner: streamx-com
-          repositories: homebrew-tap
-
-      # This step may be significantly simplified if streamx-cli repo will be public.
       - name: Install streamx via Homebrew
-        env:
-          TAP_TAG: streamx-${{ github.ref_name }}
-          HOMEBREW_GITHUB_API_TOKEN: ${{ steps.app-token.outputs.token }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ github.ref_name }}"
           if [[ "$TAG" == *-rc.* ]]; then
-            TAP_BRANCH="test-preview"
+            TAP_BRANCH="preview"
           else
-            TAP_BRANCH="test-main"
+            TAP_BRANCH="main"
           fi
           
-          brew tap streamx-com/tap https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/streamx-com/homebrew-tap
+          brew tap streamx-com/tap
           cd "$(brew --repository streamx-com/tap)"
-          git fetch origin "${TAP_BRANCH}"
-          git checkout "${TAP_TAG}"
-          
-          gh release download "${{ github.ref_name }}" \
-            --repo streamx-com/streamx-cli \
-            --pattern "*.zip" \
-            --dir /tmp/streamx-assets
-          
-          DOWNLOAD_URL=$(brew info --json=v2 streamx-com/tap/streamx | jq -r '.formulae[0].urls.stable.url')
-          CACHE_ENTRY=$(brew --cache --formula streamx-com/tap/streamx)
-          mkdir -p "$(dirname "$CACHE_ENTRY")"
-          ASSET_FILE=$(basename "$DOWNLOAD_URL")
-          cp "/tmp/streamx-assets/$ASSET_FILE" "$CACHE_ENTRY"
-          
-          brew install streamx-com/tap/streamx
+          git checkout "$TAP_BRANCH"
+          brew install streamx-com/tap/streamx@${TAG}
 
       - name: Smoke test
         run: |
