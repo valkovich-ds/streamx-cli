@@ -22,9 +22,12 @@ BASE=${CURRENT%-SNAPSHOT}
 
 if [[ "$TYPE" == "preview" ]]; then
   # Find the next rc number by checking existing tags
-  LAST_RC=$(git tag -l "${BASE}-rc.*" | sed "s/${BASE}-rc\.//" | sort -n | tail -1)
+  LAST_RC=$(git tag -l "${BASE}-rc.*" | sed "s/${BASE}-rc\.//" | sed 's/\..*//' | sort -n | tail -1)
   NEXT_RC=$(( ${LAST_RC:-0} + 1 ))
-  PREVIEW="${BASE}-rc.${NEXT_RC}"
+
+  # Include short commit SHA for traceability (valid semver pre-release identifier)
+  SHORT_SHA=$(git rev-parse --short HEAD)
+  PREVIEW="${BASE}-rc.${NEXT_RC}.${SHORT_SHA}"
 
   echo ""
   echo "Preview version: $PREVIEW"

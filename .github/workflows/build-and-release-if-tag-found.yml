@@ -1,7 +1,7 @@
 name: 'Build and release if tag found'
 
 # Shown in GitHub Actions UI to distinguish build types:
-# - Reguilar builds
+# - Regular builds
 # - Preview releases
 # - Releases
 run-name: >-
@@ -188,13 +188,22 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Verify tag is on main
-        # TODO BEFORE MERGE: replace native-build-2 with main
+      - name: Determine release type
+        id: release-type
         run: |
-          if ! git branch -r --contains ${{ github.sha }} | grep -q 'origin/native-build-2'; then
-            echo "Error: Tag is not on main branch. Cancel release process."
-            exit 1
+          TAG="${{ github.ref_name }}"
+          if [[ "$TAG" == *-rc.* ]]; then
+            echo "type=preview" >> $GITHUB_OUTPUT
+            echo "jreleaser_config=jreleaser-preview.yml" >> $GITHUB_OUTPUT
+            echo "brew_tap=homebrew-preview" >> $GITHUB_OUTPUT
+            echo "brew_tap_slug=valkovich-ds/preview" >> $GITHUB_OUTPUT
+          else
+            echo "type=stable" >> $GITHUB_OUTPUT
+            echo "jreleaser_config=jreleaser.yml" >> $GITHUB_OUTPUT
+            echo "brew_tap=homebrew-tap" >> $GITHUB_OUTPUT
+            echo "brew_tap_slug=valkovich-ds/tap" >> $GITHUB_OUTPUT
           fi
+          echo "Release type: $(grep type <<< "$(cat $GITHUB_OUTPUT)" | head -1)"
 
       - name: Set up JDK 25
         uses: actions/setup-java@v5
@@ -209,14 +218,14 @@ jobs:
           pattern: streamx-*
           merge-multiple: true
 
-      - name: Generate GitHub App token
-        id: app-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ secrets.GH_STREAMX_RELEASE_APP_ID }}
-          private-key: ${{ secrets.GH_STREAMX_RELEASE_APP_PRIVATE_KEY }}
-          owner: streamx-com
-          repositories: homebrew-tap
+#      - name: Generate GitHub App token
+#        id: app-token
+#        uses: actions/create-github-app-token@v1
+#        with:
+#          app-id: ${{ secrets.GH_STREAMX_RELEASE_APP_ID }}
+#          private-key: ${{ secrets.GH_STREAMX_RELEASE_APP_PRIVATE_KEY }}
+#          owner: streamx-com
+#          repositories: homebrew-tap,homebrew-preview-tap
 
       - name: Release with JReleaser
         env:
@@ -238,7 +247,9 @@ jobs:
             cd ..
           done
           
-          ./mvnw jreleaser:full-release -Djreleaser.strict=true
+          ./mvnw jreleaser:full-release \
+            -Djreleaser.config.file=${{ steps.release-type.outputs.jreleaser_config }} \
+            -Djreleaser.strict=true
 
       - name: Upload JReleaser output
         if: always()
@@ -248,6 +259,34 @@ jobs:
           path: |
             target/jreleaser/trace.log
             target/jreleaser/output.properties
+
+      - name: Create versioned formula
+        env:
+          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          BREW_TAP: ${{ steps.release-type.outputs.brew_tap }}
+        run: |
+          git clone https://x-access-token:${GH_TOKEN}@github.com/valkovich-ds/${BREW_TAP}.git
+          cd ${BREW_TAP}/Formula
+          
+          VERSION=$(cd ../../ && ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
+          FILENAME="streamx@${VERSION}.rb"
+          
+          if [ -f "$FILENAME" ]; then
+            echo "Versioned formula already exists, skipping."
+            exit 0
+          fi
+          
+          # Copy the freshly-pushed unversioned formula
+          cp streamx.rb "$FILENAME"
+          
+          CLASS_SUFFIX=$(echo "$VERSION" | sed 's/[^a-zA-Z0-9]//g')
+          sed -i "s/class Streamx/class StreamxAT${CLASS_SUFFIX}/" "$FILENAME"
+          
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add "$FILENAME"
+          git commit -m "Add versioned formula for ${VERSION}"
+          git push
 
   brew-install-test:
     needs: release
@@ -268,14 +307,28 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.name }}-brew-install-test
     steps:
+      - name: Determine tap
+        id: tap
+        run: |
+          TAG="${{ github.ref_name }}"
+          if [[ "$TAG" == *-rc.* ]]; then
+            echo "slug=valkovich-ds/preview" >> $GITHUB_OUTPUT
+          else
+            echo "slug=valkovich-ds/tap" >> $GITHUB_OUTPUT
+          fi
+
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@main
 
-      - name: Install streamx via Homebrew
+      - name: Install latest streamx via Homebrew
         run: |
-          # brew install streamx-com/tap/streamx@${TAG}
-          brew install valkovich-ds/tap/streamx@${TAG}
-
-      - name: Smoke test
-        run: |
+          brew install ${{ steps.tap.outputs.slug }}/streamx
           streamx --help
+          streamx --version | grep -q "${{ github.ref_name }}" || { echo "Version mismatch: expected ${{ github.ref_name }}"; streamx --version; exit 1; }
+          brew uninstall streamx
+
+      - name: Install versioned streamx via Homebrew
+        run: |
+          brew install ${{ steps.tap.outputs.slug }}/streamx@${{ github.ref_name }}
+          streamx --help
+          streamx --version | grep -q "${{ github.ref_name }}" || { echo "Version mismatch: expected ${{ github.ref_name }}"; streamx --version; exit 1; }

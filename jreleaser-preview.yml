@@ -34,6 +34,8 @@ release:
   github:
     overwrite: true
     tagName: '{{projectVersion}}'
+    prerelease:
+      enabled: true
     milestone:
       close: false
     changelog:
@@ -45,8 +47,8 @@ packagers:
     active: ALWAYS
     repository:
       owner: valkovich-ds
-#      owner: streamx-com
-      name: homebrew-tap
+      #      owner: streamx-com
+      name: homebrew-preview
       branch: main
       branchPush: main
     formulaName: streamx
