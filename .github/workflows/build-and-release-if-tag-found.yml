@@ -196,7 +196,7 @@ jobs:
             echo "type=preview" >> $GITHUB_OUTPUT
             echo "jreleaser_config=jreleaser-preview.yml" >> $GITHUB_OUTPUT
             echo "brew_tap=homebrew-preview" >> $GITHUB_OUTPUT
-            echo "brew_tap_slug=valkovich-ds/preview" >> $GITHUB_OUTPUT
+            echo "brew_tap_slug=valkovich-ds/preview-tap" >> $GITHUB_OUTPUT
           else
             echo "type=stable" >> $GITHUB_OUTPUT
             echo "jreleaser_config=jreleaser.yml" >> $GITHUB_OUTPUT
@@ -260,7 +260,9 @@ jobs:
             target/jreleaser/trace.log
             target/jreleaser/output.properties
 
-      - name: Create versioned formula
+      # Homebrew doesn't support multiple versions of the same formula.
+      # Because of this, we create a separate formula for each version.
+      - name: Create versioned Homebrew formula
         env:
           HOMEBREW_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN_VALKOVICH_DS_TEST }}
           BREW_TAP: ${{ steps.release-type.outputs.brew_tap }}
@@ -312,7 +314,7 @@ jobs:
         run: |
           TAG="${{ github.ref_name }}"
           if [[ "$TAG" == *-rc.* ]]; then
-            echo "slug=valkovich-ds/preview" >> $GITHUB_OUTPUT
+            echo "slug=valkovich-ds/preview-tap" >> $GITHUB_OUTPUT
           else
             echo "slug=valkovich-ds/tap" >> $GITHUB_OUTPUT
           fi
