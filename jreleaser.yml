@@ -52,5 +52,5 @@ packagers:
       name: homebrew-tap
       branch: main
       branchPush: main
-    formulaName: streamx@{{projectVersion}}
+    formulaName: streamx
     multiPlatform: true
