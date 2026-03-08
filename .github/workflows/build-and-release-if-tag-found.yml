@@ -262,10 +262,10 @@ jobs:
 
       - name: Create versioned formula
         env:
-          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          HOMEBREW_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN_VALKOVICH_DS_TEST }}
           BREW_TAP: ${{ steps.release-type.outputs.brew_tap }}
         run: |
-          git clone https://x-access-token:${GH_TOKEN}@github.com/valkovich-ds/${BREW_TAP}.git
+          git clone https://x-access-token:${HOMEBREW_GITHUB_TOKEN}@github.com/valkovich-ds/${BREW_TAP}.git
           cd ${BREW_TAP}/Formula
           
           VERSION=$(cd ../../ && ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
