@@ -17,7 +17,7 @@ concurrency:
         && format('{0}-release', github.workflow)
         || format('{0}-{1}', github.workflow, github.ref)
     }}
-    
+
 # Shown in GitHub Actions UI to distinguish build types:
 # - Regular builds
 # - Preview releases
@@ -68,6 +68,7 @@ jobs:
     name: generate-reachability-metadata
     runs-on: ubuntu-24.04
     steps:
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-env
         with:
           gcp_workload_identity_provider: ${{ secrets.GCP_STREAMX_RELEASES_WORKLOAD_IDENTITY_PROVIDER }}
@@ -107,6 +108,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.name }}-build
     steps:
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-env
         with:
           gcp_workload_identity_provider: ${{ secrets.GCP_STREAMX_RELEASES_WORKLOAD_IDENTITY_PROVIDER }}
@@ -160,6 +162,9 @@ jobs:
     outputs:
       brew_tap_slug: ${{ steps.release-type.outputs.brew_tap_slug }}
     steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-tags: true
       - uses: ./.github/actions/setup-env
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -203,7 +208,6 @@ jobs:
           # JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN_VALKOVICH_DS_TEST }}
         run: |
-          ls -la artifacts/
           chmod +x artifacts/streamx-*
           
           echo "Pre-create platform ZIPs manually"
