@@ -220,7 +220,8 @@ jobs:
       - name: Release with JReleaser
         env:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+#          JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN_VALKOVICH_DS_TEST }}
         run: |
           ls -la artifacts/
           chmod +x artifacts/streamx-*
@@ -271,7 +272,8 @@ jobs:
 
       - name: Install streamx via Homebrew
         run: |
-          brew install streamx-com/tap/streamx@${TAG}
+          # brew install streamx-com/tap/streamx@${TAG}
+          brew install valkovich-ds/tap/streamx@${TAG}
 
       - name: Smoke test
         run: |
