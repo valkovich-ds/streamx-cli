@@ -1,0 +1,53 @@
+project:
+  name: streamx
+  description: StreamX CLI
+  versionPattern: SEMVER
+  license: LicenseRef-StreamX
+  licenseUrl: https://github.com/streamx-com/streamx-cli/blob/main/LICENSE.txt
+  links:
+    homepage: https://github.com/streamx-com/streamx-cli
+  authors:
+    - streamx
+  inceptionYear: '2026'
+
+platform:
+  replacements:
+    osx-x86_64: macos-x86_64
+    osx-aarch_64: macos-aarch64
+
+distributions:
+  streamx:
+    type: BINARY
+    executable:
+      name: streamx
+    artifacts:
+      - path: artifacts/streamx-{{projectVersion}}-linux-x86_64.zip
+        platform: linux-x86_64
+      - path: artifacts/streamx-{{projectVersion}}-linux-aarch64.zip
+        platform: linux-aarch_64
+      - path: artifacts/streamx-{{projectVersion}}-macos-aarch64.zip
+        platform: osx-aarch_64
+      - path: artifacts/streamx-{{projectVersion}}-macos-x86_64.zip
+        platform: osx-x86_64
+
+release:
+  github:
+    overwrite: true
+    tagName: '{{projectVersion}}'
+    milestone:
+      close: false
+    changelog:
+      formatted: ALWAYS
+      format: '- {{commitShortHash}} {{commitTitle}}'
+
+packagers:
+  brew:
+    active: ALWAYS
+    repository:
+      owner: valkovich-ds
+#      owner: streamx-com
+      name: homebrew-tap
+      branch: main
+      branchPush: main
+    formulaName: streamx
+    multiPlatform: true
