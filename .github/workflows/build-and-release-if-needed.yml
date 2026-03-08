@@ -16,7 +16,8 @@ concurrency:
       startsWith(github.ref, 'refs/tags/')
         && format('{0}-release', github.workflow)
         || format('{0}-{1}', github.workflow, github.ref)
-
+    }}
+    
 # Shown in GitHub Actions UI to distinguish build types:
 # - Regular builds
 # - Preview releases
