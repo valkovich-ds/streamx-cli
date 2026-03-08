@@ -25,19 +25,10 @@ jobs:
     if: contains(fromJSON('["valkovich-ds", "marekczajkowski", "michalcukierman", "kamilchociej"]'), github.actor)
     runs-on: ubuntu-24.04
     steps:
-      - name: Generate GitHub App token
-        id: app-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ secrets.GH_STREAMX_RELEASE_APP_ID }}
-          private-key: ${{ secrets.GH_STREAMX_RELEASE_APP_PRIVATE_KEY }}
-          owner: streamx-com
-          repositories: streamx-cli
-
       - uses: actions/checkout@v6
         with:
           fetch-tags: true
-          token: ${{ steps.app-token.outputs.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: ./.github/actions/setup-env
         with:
