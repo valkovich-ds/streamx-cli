@@ -1,0 +1,56 @@
+name: Trigger release
+
+on:
+  workflow_dispatch:
+    inputs:
+      type:
+        description: 'Release type'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - preview
+
+permissions:
+  contents: write
+
+jobs:
+  trigger-release:
+    # TODO - apply better security for the release workflow if needed:
+    # https://github.com/orgs/community/discussions/155451#discussioncomment-12677922
+    # We also can restrict who can create tags.
+    # If such a paranoid security not needed, remove this TODO.
+    if: contains(fromJSON('["valkovich-ds", "marekczajkowski", "michalcukierman", "kamilchociej"]'), github.actor)
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.GH_STREAMX_RELEASE_APP_ID }}
+          private-key: ${{ secrets.GH_STREAMX_RELEASE_APP_PRIVATE_KEY }}
+          owner: streamx-com
+          repositories: streamx-cli
+
+      - uses: actions/checkout@v4
+        with:
+          ref: native-build-2
+          fetch-depth: 0
+          fetch-tags: true
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+      - name: Run release
+        run: ./.github/scripts/release.sh ${{ inputs.type }} -y

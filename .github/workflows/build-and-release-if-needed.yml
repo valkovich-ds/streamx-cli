@@ -1,5 +1,22 @@
 name: 'Build and release if tag found'
 
+# Runs on pull requests, pushes to main, and tag pushes (which trigger releases).
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
+
+# One run at a time per branch; all releases share a single queue so tags can't race.
+concurrency:
+  group: >-
+    ${{
+      startsWith(github.ref, 'refs/tags/')
+        && format('{0}-release', github.workflow)
+        || format('{0}-{1}', github.workflow, github.ref)
+
 # Shown in GitHub Actions UI to distinguish build types:
 # - Regular builds
 # - Preview releases
@@ -13,21 +30,6 @@ run-name: >-
     || format('Build {0} - {1}', github.head_ref || github.ref_name,
          github.event.pull_request.head.sha || github.sha)
   }}
-
-# Runs on pull requests, pushes to main, and tag pushes (which trigger releases).
-on:
-  pull_request:
-  push:
-    branches:
-      - main
-    tags:
-      - '*'
-
-# Only one run at a time per branch — newer pushes cancel older in-progress runs.
-# Tag-triggered runs (releases) are not cancelled.
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
 
 permissions:
   id-token: write
@@ -61,8 +63,9 @@ jobs:
   #
   # More detailed explanation: https://github.com/streamx-com/streamx-cli/pull/13#discussion_r2882693570
   reachability-metadata:
-    runs-on: ubuntu-24.04
+    needs: setup
     name: generate-reachability-metadata
+    runs-on: ubuntu-24.04
     steps:
       - uses: ./.github/actions/setup-env
         with:
@@ -135,7 +138,6 @@ jobs:
 
       - name: Prepare artifact
         run: |
-          ls -la target/
           mkdir -p staging
           cp target/*-runner staging/${{ matrix.artifact }}
           chmod +x staging/${{ matrix.artifact }}
@@ -167,12 +169,12 @@ jobs:
           TAG="${{ github.ref_name }}"
           if [[ "$TAG" == *-rc.* ]]; then
             echo "type=preview" >> $GITHUB_OUTPUT
-            echo "jreleaser_config=jreleaser-preview.yml" >> $GITHUB_OUTPUT
+            echo "jreleaser_config=.github/jreleaser/jreleaser-preview.yml" >> $GITHUB_OUTPUT
             echo "brew_tap=homebrew-preview" >> $GITHUB_OUTPUT
             echo "brew_tap_slug=valkovich-ds/preview-tap" >> $GITHUB_OUTPUT
           else
             echo "type=stable" >> $GITHUB_OUTPUT
-            echo "jreleaser_config=jreleaser.yml" >> $GITHUB_OUTPUT
+            echo "jreleaser_config=.github/jreleaser/jreleaser.yml" >> $GITHUB_OUTPUT
             echo "brew_tap=homebrew-tap" >> $GITHUB_OUTPUT
             echo "brew_tap_slug=valkovich-ds/tap" >> $GITHUB_OUTPUT
           fi
@@ -185,14 +187,14 @@ jobs:
           pattern: streamx-*
           merge-multiple: true
 
-#      - name: Generate GitHub App token
-#        id: app-token
-#        uses: actions/create-github-app-token@v1
-#        with:
-#          app-id: ${{ secrets.GH_STREAMX_RELEASE_APP_ID }}
-#          private-key: ${{ secrets.GH_STREAMX_RELEASE_APP_PRIVATE_KEY }}
-#          owner: streamx-com
-#          repositories: homebrew-tap,homebrew-preview-tap
+      #      - name: Generate GitHub App token
+      #        id: app-token
+      #        uses: actions/create-github-app-token@v1
+      #        with:
+      #          app-id: ${{ secrets.GH_STREAMX_RELEASE_APP_ID }}
+      #          private-key: ${{ secrets.GH_STREAMX_RELEASE_APP_PRIVATE_KEY }}
+      #          owner: streamx-com
+      #          repositories: homebrew-tap,homebrew-preview-tap
 
       - name: Release with JReleaser
         env:
@@ -203,7 +205,7 @@ jobs:
           ls -la artifacts/
           chmod +x artifacts/streamx-*
           
-          # Pre-create platform ZIPs manually
+          echo "Pre-create platform ZIPs manually"
           VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
           for PLATFORM in linux-x86_64 linux-aarch64 macos-aarch64 macos-x86_64; do
             mkdir -p staging/$PLATFORM/bin
@@ -245,7 +247,7 @@ jobs:
             exit 0
           fi
           
-          # Copy the freshly-pushed unversioned formula
+          echo "Copy the freshly-pushed unversioned formula"
           cp streamx.rb "$FILENAME"
           
           CLASS_SUFFIX=$(echo "$VERSION" | sed 's/[^a-zA-Z0-9]//g')
