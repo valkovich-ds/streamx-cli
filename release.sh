@@ -1,9 +1,18 @@
 #!/usr/bin/env bash
-# release.sh - Usage: ./release.sh [patch|minor|major|preview]
+# release.sh - Usage: ./release.sh [patch|minor|major|preview] [-y]
 
 set -euo pipefail
 
-TYPE=${1:-patch}
+# Parse arguments
+AUTO_CONFIRM=false
+TYPE=patch
+for arg in "$@"; do
+  case "$arg" in
+    -y) AUTO_CONFIRM=true ;;
+    *) TYPE="$arg" ;;
+  esac
+done
+
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 # Get current version from pom.xml
@@ -20,21 +29,28 @@ fi
 # Strip -SNAPSHOT
 BASE=${CURRENT%-SNAPSHOT}
 
+confirm() {
+  local message="$1"
+  if [[ "$AUTO_CONFIRM" == true ]]; then
+    echo "$message Auto-confirmed with -y flag."
+    return 0
+  fi
+  read -p "$message [y/N] " -n 1 -r
+  echo
+  [[ $REPLY =~ ^[Yy]$ ]] || { echo "Aborted."; exit 0; }
+}
+
 if [[ "$TYPE" == "preview" ]]; then
   # Find the next rc number by checking existing tags
   LAST_RC=$(git tag -l "${BASE}-rc.*" | sed "s/${BASE}-rc\.//" | sed 's/\..*//' | sort -n | tail -1)
   NEXT_RC=$(( ${LAST_RC:-0} + 1 ))
 
-  # Include short commit SHA for traceability (valid semver pre-release identifier)
-  SHORT_SHA=$(git rev-parse --short HEAD)
-  PREVIEW="${BASE}-rc.${NEXT_RC}.${SHORT_SHA}"
+  PREVIEW="${BASE}-rc.${NEXT_RC}"
 
   echo ""
   echo "Preview version: $PREVIEW"
   echo ""
-  read -p "Are you sure you want to publish preview $PREVIEW? [y/N] " -n 1 -r
-  echo
-  [[ $REPLY =~ ^[Yy]$ ]] || { echo "Aborted."; exit 0; }
+  confirm "Are you sure you want to publish preview $PREVIEW?"
 
   # Set rc version, commit, tag
   mvn versions:set -DnewVersion="$PREVIEW" -DgenerateBackupPoms=false
@@ -65,16 +81,14 @@ case "$TYPE" in
   patch) NEXT="${MAJOR}.${MINOR}.$((PATCH + 1))-SNAPSHOT" ;;
   minor) NEXT="${MAJOR}.$((MINOR + 1)).0-SNAPSHOT" ;;
   major) NEXT="$((MAJOR + 1)).0.0-SNAPSHOT" ;;
-  *) echo "Usage: $0 [patch|minor|major|preview]"; exit 1 ;;
+  *) echo "Usage: $0 [patch|minor|major|preview] [-y]"; exit 1 ;;
 esac
 
 echo ""
 echo "Release version:         $RELEASE"
 echo "Next development version: $NEXT"
 echo ""
-read -p "Are you sure you want to release $RELEASE? [y/N] " -n 1 -r
-echo
-[[ $REPLY =~ ^[Yy]$ ]] || { echo "Aborted."; exit 0; }
+confirm "Are you sure you want to release $RELEASE?"
 
 # Set release version, commit, tag
 mvn versions:set -DnewVersion="$RELEASE" -DgenerateBackupPoms=false

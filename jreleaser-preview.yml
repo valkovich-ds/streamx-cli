@@ -48,7 +48,7 @@ packagers:
     repository:
       owner: valkovich-ds
       #      owner: streamx-com
-      name: homebrew-preview
+      name: homebrew-preview-tap
       branch: main
       branchPush: main
     formulaName: streamx
