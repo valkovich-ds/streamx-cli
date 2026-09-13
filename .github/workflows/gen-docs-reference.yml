@@ -34,7 +34,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-env
         with:
-          # TODO BEFORE MERGE TO UPSTREAM: Uncomment gcp_ entries PR and remove the github_token entry
+          # TODO BEFORE MERGE TO UPSTREAM: uncomment the three gcp_/gar_ entries (keep github_token, it is required)
           # gcp_workload_identity_provider: ${{ secrets.GCP_STREAMX_RELEASES_WORKLOAD_IDENTITY_PROVIDER }}
           # gcp_service_account: ${{ secrets.GCP_STREAMX_RELEASES_SNAPSHOT_DEPLOY_SA }}
           # gar_docker_registry: ${{ vars.GAR_DOCKER_REGISTRY }}
@@ -48,7 +48,7 @@ jobs:
       - name: Generate command reference from the CLI
         # TODO BEFORE MERGE TO UPSTREAM: remove the env block below
         env:
-          CLOUDSDK_AUTH_ACCESS_TOKEN: ${{ secrets.GCLOUD_ACCESS_TOKEN }}
+          GCLOUD_ACCESS_TOKEN: ${{ secrets.GCLOUD_ACCESS_TOKEN }}
         run: |
           ./mvnw -B -ntp -q package -DskipTests
           java -jar target/streamx-cli-*-runner.jar __generate-docs docs/docs/commands
