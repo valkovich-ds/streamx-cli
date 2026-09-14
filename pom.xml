@@ -496,6 +496,48 @@
   </build>
 
   <profiles>
+    <!-- TODO BEFORE MERGE TO UPSTREAM START: delete this profile -->
+    <profile>
+      <id>fork-artifact-registry-token</id>
+      <activation>
+        <property>
+          <name>env.GCLOUD_ACCESS_TOKEN</name>
+        </property>
+      </activation>
+      <repositories>
+        <repository>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <id>streamx-maven-snapshots</id>
+          <url>https://oauth2accesstoken:${env.GCLOUD_ACCESS_TOKEN}@europe-west1-maven.pkg.dev/streamx-releases/streamx-maven-snapshots</url>
+        </repository>
+        <repository>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>streamx-maven-releases</id>
+          <url>https://oauth2accesstoken:${env.GCLOUD_ACCESS_TOKEN}@europe-west1-maven.pkg.dev/streamx-releases/streamx-maven-releases</url>
+        </repository>
+        <repository>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>streamx-maven-public-releases</id>
+          <url>https://oauth2accesstoken:${env.GCLOUD_ACCESS_TOKEN}@europe-west1-maven.pkg.dev/streamx-releases/streamx-maven-public-releases</url>
+        </repository>
+      </repositories>
+    </profile>
+    <!-- TODO BEFORE MERGE TO UPSTREAM END -->
     <profile>
       <id>ci</id>
       <activation>
