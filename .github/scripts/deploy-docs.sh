@@ -21,11 +21,11 @@ if [[ "$ACTION" != publish && "$ACTION" != remove ]] || [[ -z "$TARGET" ]]; then
 fi
 : "${GH_PAGES_REMOTE:?}" "${GITHUB_REPOSITORY:?}"
 
-BRANCH=gh-pages
+BRANCH="gh-pages"
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 
-# Versions are recognised by directory name; anything else is a manual deployment.
+# Versions are recognised by directory name. Anything else is a manual deployment.
 RELEASE='^[0-9]+\.[0-9]+\.[0-9]+$'
 PREVIEW='^[0-9]+\.[0-9]+\.[0-9]+-rc\.'
 PR='^pr-[0-9]+$'
@@ -52,70 +52,79 @@ slots() {  # <regex> [sort options...]
     | { grep -E "$regex" || true; } | sort "$@"
 }
 
-li() {  # <slot> <label> [<extra html>]
-  printf '  <li><a href="%s/">%s</a>%s</li>\n' "$1" "$2" "${3:+ $3}"
+# One table row: the version/branch/PR label, its documentation, and one link elsewhere.
+row() {  # <label> <docs href> <link text> <link href>
+  printf '<tr><td>%s</td><td><a href="%s">View documentation</a></td><td><a href="%s">%s</a></td></tr>\n' \
+    "$1" "$2" "$4" "$3"
 }
 
-lis() {  # slots on stdin -> one <li> each; PR entries also link to the pull request
-  local slot
-  while IFS= read -r slot; do
-    [[ -z "$slot" ]] && continue
-    if [[ "$slot" =~ $PR ]]; then
-      li "$slot" "$slot" "<a class=\"muted\" href=\"https://github.com/$GITHUB_REPOSITORY/pull/${slot#pr-}\">#${slot#pr-}</a>"
-    else
-      li "$slot" "$slot"
-    fi
-  done
-}
-
-section() {  # <title>; <li> lines on stdin; prints nothing for an empty list
-  local body
-  body="$(cat)"
-  [[ -z "$body" ]] && return 0
-  printf '<h2>%s</h2>\n<ul>\n%s\n</ul>\n' "$1" "$body"
+# A titled table around the rows on stdin. Prints nothing when there are none.
+table() {  # <title> <first column header> <third column header> [<note html>]
+  local rows
+  rows="$(cat)"
+  [[ -z "$rows" ]] && return 0
+  printf '<h2>%s</h2>\n' "$1"
+  [[ -n "${4:-}" ]] && printf '<p>%s</p>\n' "$4"
+  printf '<table>\n<tr><th>%s</th><th>Documentation</th><th>%s</th></tr>\n%s\n</table>\n' "$2" "$3" "$rows"
 }
 
 write_index() {
-  local latest
+  local gh="https://github.com/$GITHUB_REPOSITORY" assets latest note="" slot
+  assets="$(cd "$(dirname "$0")/../.." && pwd)/docs/static/img"
   latest="$(slots "$RELEASE" -rV | head -n1)"
+  if [[ -n "$latest" && -d "$WORK/latest" ]]; then
+    note="The newest release is always available at <a href=\"latest/\">latest</a>."
+  fi
+
   cat <<EOF
 <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>StreamX CLI docs</title>
+<title>StreamX CLI documentation</title>
+EOF
+  if [[ -f "$assets/favicon.svg" ]]; then
+    printf '<link rel="icon" href="data:image/svg+xml;base64,%s">\n' "$(base64 < "$assets/favicon.svg" | tr -d '\n')"
+  fi
+  cat <<EOF
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600&display=swap">
 <style>
-  body { margin: 0; padding: 3rem 1.5rem; background: #0a0a0b; color: #ecf5ff;
-         font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
-  main { max-width: 40rem; margin: 0 auto; }
-  h1 { font-size: 1.75rem; margin: 0 0 0.25rem; }
-  h2 { font-size: 0.8125rem; margin: 2rem 0 0.5rem; color: #9aa4b2; text-transform: uppercase; letter-spacing: 0.08em; }
-  ul { list-style: none; margin: 0; padding: 0; }
-  li { padding: 0.4rem 0; border-bottom: 1px solid #232323; }
-  a { color: #b98bff; text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  .lead, .muted { color: #9aa4b2; }
-  .muted { font-size: 0.875rem; margin-left: 0.5rem; }
+  /* Same ground, text, accent and typeface as the docs site (docs/src/css/custom.css). */
+  body { max-width: 56rem; margin: 2rem auto; padding: 0 1rem; background: #0a0a0b; color: #ecf5ff;
+         font-family: "Be Vietnam Pro", system-ui, sans-serif; line-height: 1.5; }
+  a { color: #b98bff; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; }
+  th, td { text-align: left; padding: 0.4rem 0.75rem; border-bottom: 1px solid #2c2c2c; }
 </style>
 </head>
 <body>
-<main>
-<h1>StreamX CLI documentation</h1>
-<p class="lead">Every published version of the command reference and guides.</p>
 EOF
-  if [[ -n "$latest" && -d "$WORK/latest" ]]; then
-    li latest "$latest" | section "Latest release"
-  fi
-  if [[ -d "$WORK/main" ]]; then
-    li main main | section "Development"
-  fi
-  slots "$RELEASE" -rV | lis | section "Releases"
-  slots "$PREVIEW" -rV | lis | section "Preview releases"
-  slots "$PR" -t- -k2 -rn | lis | section "Pull request previews"
-  slots '.' | { grep -Ev "$KNOWN" || true; } | lis | section "Other"
+  [[ -f "$assets/streamx-logo-dark-bg.svg" ]] && cat "$assets/streamx-logo-dark-bg.svg" && echo
   cat <<EOF
-</main>
+<h1>CLI documentation</h1>
+<p>Every published version of the command reference and guides.</p>
+EOF
+
+  slots "$RELEASE" -rV | while IFS= read -r slot; do
+    row "$slot" "$slot/" "View release notes" "$gh/releases/tag/$slot"
+  done | table "Releases" "Version" "Release notes" "$note"
+
+  # Preview releases are published to the <repo>-preview repository (see release.yml).
+  slots "$PREVIEW" -rV | while IFS= read -r slot; do
+    row "$slot" "$slot/" "View release notes" "$gh-preview/releases/tag/$slot"
+  done | table "Preview releases" "Version" "Release notes"
+
+  slots "$PR" -t- -k2 -rn | while IFS= read -r slot; do
+    row "#${slot#pr-}" "$slot/" "View PR on GitHub" "$gh/pull/${slot#pr-}"
+  done | table "Pull requests" "Pull request" "GitHub"
+
+  { [[ -d "$WORK/main" ]] && echo main; slots '.' | { grep -Ev "$KNOWN" || true; }; } | while IFS= read -r slot; do
+    [[ -z "$slot" ]] && continue
+    row "$slot" "$slot/" "View branch on GitHub" "$gh/tree/$slot"
+  done | table "Branches" "Branch" "GitHub"
+
+  cat <<EOF
 </body>
 </html>
 EOF
