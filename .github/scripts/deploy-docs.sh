@@ -52,20 +52,23 @@ slots() {  # <regex> [sort options...]
     | { grep -E "$regex" || true; } | sort "$@"
 }
 
-# One table row: the version/branch/PR label, its documentation, and one link elsewhere.
-row() {  # <label> <docs href> <link text> <link href>
-  printf '<tr><td>%s</td><td><a href="%s">View documentation</a></td><td><a href="%s">%s</a></td></tr>\n' \
-    "$1" "$2" "$4" "$3"
+# One table row: the version/branch/PR label, its documentation, and optionally one link elsewhere.
+row() {  # <label> <docs href> [<link text> <link href>]
+  printf '<tr><td>%s</td><td><a href="%s">View documentation</a></td>' "$1" "$2"
+  [[ $# -gt 2 ]] && printf '<td><a href="%s">%s</a></td>' "$4" "$3"
+  printf '</tr>\n'
 }
 
 # A titled table around the rows on stdin. Prints nothing when there are none.
-table() {  # <title> <first column header> <third column header> [<note html>]
+table() {  # <title> <first column header> [<third column header>] [<note html>]
   local rows
   rows="$(cat)"
   [[ -z "$rows" ]] && return 0
   printf '<h2>%s</h2>\n' "$1"
   [[ -n "${4:-}" ]] && printf '<p>%s</p>\n' "$4"
-  printf '<table>\n<tr><th>%s</th><th>Documentation</th><th>%s</th></tr>\n%s\n</table>\n' "$2" "$3" "$rows"
+  printf '<table>\n<tr><th>%s</th><th>Documentation</th>' "$2"
+  [[ -n "${3:-}" ]] && printf '<th>%s</th>' "$3"
+  printf '</tr>\n%s\n</table>\n' "$rows"
 }
 
 write_index() {
@@ -91,16 +94,16 @@ EOF
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600&display=swap">
 <style>
   /* Same ground, text, accent and typeface as the docs site (docs/src/css/custom.css). */
-  body { max-width: 56rem; margin: 2rem auto; padding: 0 1rem; background: #0a0a0b; color: #ecf5ff;
+  body { max-width: 56rem; margin: 2rem auto; padding: 0 1rem; background: #ffffff; color: #0a0a0b;
          font-family: "Be Vietnam Pro", system-ui, sans-serif; line-height: 1.5; }
-  a { color: #b98bff; }
+  a { color: #7714ff; }
   table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; }
-  th, td { text-align: left; padding: 0.4rem 0.75rem; border-bottom: 1px solid #2c2c2c; }
+  th, td { text-align: left; padding: 0.4rem 0.75rem; border-bottom: 1px solid #e6e6e6; }
 </style>
 </head>
 <body>
 EOF
-  [[ -f "$assets/streamx-logo-dark-bg.svg" ]] && cat "$assets/streamx-logo-dark-bg.svg" && echo
+  [[ -f "$assets/streamx-logo-light-bg.svg" ]] && cat "$assets/streamx-logo-light-bg.svg" && echo
   cat <<EOF
 <h1>CLI documentation</h1>
 <p>Every published version of the command reference and guides.</p>
@@ -110,10 +113,10 @@ EOF
     row "$slot" "$slot/" "View release notes" "$gh/releases/tag/$slot"
   done | table "Releases" "Version" "Release notes" "$note"
 
-  # Preview releases are published to the <repo>-preview repository (see release.yml).
+  # Preview releases have no release notes.
   slots "$PREVIEW" -rV | while IFS= read -r slot; do
-    row "$slot" "$slot/" "View release notes" "$gh-preview/releases/tag/$slot"
-  done | table "Preview releases" "Version" "Release notes"
+    row "$slot" "$slot/"
+  done | table "Preview releases" "Version"
 
   slots "$PR" -t- -k2 -rn | while IFS= read -r slot; do
     row "#${slot#pr-}" "$slot/" "View PR on GitHub" "$gh/pull/${slot#pr-}"
@@ -136,7 +139,7 @@ else
   MESSAGE="Remove $TARGET (${GITHUB_REF_NAME:-?})"
 fi
 
-for attempt in 1 2 3 4 5; do
+for attempt in $(seq 1 10); do
   rm -rf "$WORK" && mkdir -p "$WORK"
   if git ls-remote --exit-code --heads "$GH_PAGES_REMOTE" "$BRANCH" > /dev/null 2>&1; then
     git clone -q --depth 1 --branch "$BRANCH" "$GH_PAGES_REMOTE" "$WORK"
@@ -163,5 +166,5 @@ for attempt in 1 2 3 4 5; do
   sleep $((RANDOM % 8 + 2))
 done
 
-echo "Could not push to $BRANCH after 5 attempts." >&2
+echo "Could not push to $BRANCH after 10 attempts." >&2
 exit 1
